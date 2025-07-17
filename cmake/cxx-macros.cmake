@@ -112,9 +112,12 @@ function(prepend var prefix)
     set(${var} "${listVar}" PARENT_SCOPE)
 endfunction(prepend)
 
+
+# define_cxx_executable_project
 macro(define_cxx_executable_project name)
     set(dicep_PARAM_OPTIONS
         INSTALL # installable?
+        PACK # CPack?
         GENERATE_CONFIG # generate config.h and version.h
         BUILD_DOCS # build docs with doxygen? 
     )
@@ -144,26 +147,26 @@ macro(define_cxx_executable_project name)
     )
 
     set(dicep_usage "define_cxx_executable_project(<Name>
-     [INSTALL] [GENERATE_CONFIG] [BUILD_DOCS] 
-     [PREFIX <c-macro-prefix-name>]
-     [CXXSTANDARD 17/20/11]
-     [CXXFLAGS -Wall [...]]
-	 [CXXDEFINITIONS A=1 B C=TRUE [...]]
-     [VERSION \"\${PROJECT_VERSION}\"]
-     [HEADERS a.hh b.hh ...]
-     [DETAILED_HEADERS detail/a.hh...]
-     [SOURCES a.cc b.cc ...]
-     [INCLUDE_DIRECTORIES ../include ./include ...]
-     [LIBRARIES rt thread ...]
+      [INSTALL] [PACK] [GENERATE_CONFIG] [BUILD_DOCS] 
+      [PREFIX <c-macro-prefix-name>]
+      [CXXSTANDARD 11/17/20/23]
+      [CXXFLAGS -Wall [...]]
+	  [CXXDEFINITIONS A=1 B C=TRUE [...]]
+      [VERSION \"\${PROJECT_VERSION}\"]
+      [HEADERS a.hh b.hh ...]
+      [DETAILED_HEADERS detail/a.hh...]
+      [SOURCES a.cc b.cc ...]
+      [INCLUDE_DIRECTORIES ../include ./include ...]
+      [LIBRARIES rt thread ...]
 
-     [FLEX <my-flex-target> <scanner.l> [options...]]
-     [BISON <my-bison-target> <parser.l> [options...]]
-     )
+      [FLEX <my-flex-target> <scanner.l> [options...]]
+      [BISON <my-bison-target> <parser.l> [options...]]
+      )
      
-     prefix-name should be UPPERCASE since it's primary used as part of C/C++ Macro Name.
+      prefix-name should be UPPERCASE since it's primary used as part of C/C++ Macro Name.
      
-     Unparsed Params Are:
-     ${dicep_ARG_UNPARSED_ARGUMENTS}
+      Unparsed Params Are:
+      ${dicep_ARG_UNPARSED_ARGUMENTS}
 	")
 
     if(NOT "${dicep_ARG_UNPARSED_ARGUMENTS}" STREQUAL "")
@@ -196,6 +199,7 @@ macro(define_cxx_executable_project name)
         set(PROJ_NAME ${name})
         set(PROJ_PREFIX ${dicep_ARG_PREFIX})
 
+
         if(NOT "${PROJECT_MACRO_PREFIX}" STREQUAL "")
             set(_macro_name_prefix "${PROJECT_MACRO_PREFIX}")
         else()
@@ -209,7 +213,7 @@ macro(define_cxx_executable_project name)
             set(dicep_ARG_VERSION "${PROJECT_VERSION}")
         endif()
         if("${dicep_ARG_CXXSTANDARD}" STREQUAL "")
-            set(dicep_ARG_CXXSTANDARD "17")
+            set(dicep_ARG_CXXSTANDARD "20")
         endif()
 
         if(dicep_ARG_GENERATE_CONFIG)
@@ -224,7 +228,25 @@ macro(define_cxx_executable_project name)
 
         list(APPEND dicep_ARG_INCLUDE_DIRECTORIES
             "${CMAKE_CURRENT_SOURCE_DIR}/include")
+        if(MSVC)
+            set(_diclp_opts
+                -D_CRT_SECURE_NO_WARNINGS # using getenv() ...
+                -D_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING # using std::iterator in cxx20
+            )
+        else()
+            set(_diclp_opts
+                -pedantic -Wall -Wextra -Wshadow -Werror -pthread
+                -Wdeprecated-declarations
 
+                #-fno-permissive # don't care about declaration of '<name>' changes meaning of '<name>'
+                #-pedantic -Wall -Wextra -Werror=return-type -Wshadow=local -Wempty-body -fdiagnostics-color
+                #-D${PROJECT_MACRO_PREFIX}_UNIT_TEST=${_${PROJECT_MACRO_NAME}_unit_test}
+            )
+        endif()
+        # list(APPEND _diclp_opts "${diclp_ARG_CXXFLAGS}")
+
+        debug_print_value(PROJ_NAME)
+        debug_print_value(PROJ_PREFIX)
         add_executable(${PROJ_NAME} ${dicep_ARG_SOURCES})
 
         target_sources(${PROJ_NAME} PRIVATE
@@ -302,6 +324,195 @@ macro(define_cxx_executable_project name)
                 BISON ${dicep_ARG_BISON}
                 ${dicep_ARG_UNPARSED_ARGUMENTS}
             )
+        endif()
+
+
+        set(_lib_bin_dir bin)
+        if(NOT "${dicep_ARG_INSTALL_INC_DIR}" STREQUAL "")
+            set(_lib_bin_dir "${dicep_ARG_INSTALL_INC_DIR}")
+        elseif(${dicep_ARG_INCLUDE_DIRECTORIES})
+            list(GET dicep_ARG_INCLUDE_DIRECTORIES 0 _lib_bin_dir)
+        endif()
+        get_filename_component(_lib_bin_dir ${_lib_bin_dir} REALPATH)
+
+        set(_lib_inc_dir include)
+        if(NOT "${dicep_ARG_INSTALL_INC_DIR}" STREQUAL "")
+            set(_lib_inc_dir "${dicep_ARG_INSTALL_INC_DIR}")
+        elseif(${dicep_ARG_INCLUDE_DIRECTORIES})
+            list(GET dicep_ARG_INCLUDE_DIRECTORIES 0 _lib_inc_dir)
+        endif()
+        get_filename_component(_lib_inc_dir ${_lib_inc_dir} REALPATH)
+
+
+        message(STATUS "[${PROJ_NAME}] check and define install section.")
+
+        if(dicep_ARG_INSTALL)
+            # Setup package config
+            include(CMakePackageConfigHelpers)
+
+            # for dmg build under Darwin, 
+            # 
+            # NOT COMPLETED YET
+            #
+            set(CONFIG_PACKAGE_INSTALL_DIR ${PROJ_NAME}.app/Contents)
+
+            #             file(WRITE
+            #                 ${CMAKE_CURRENT_BINARY_DIR}/${PROJ_NAME}-config.cmake "
+            # include(\${CMAKE_CURRENT_LIST_DIR}/${PROJ_NAME}-targets.cmake)
+            # set(${PROJ_NAME}_LIBRARY ${PROJ_NAME})
+            # set(${PROJ_NAME}_LIBRARIES ${PROJ_NAME})
+            # ")
+            #             message(STATUS "[${PROJ_NAME}] file written: ${CMAKE_CURRENT_BINARY_DIR}/${PROJ_NAME}-config.cmake")
+            #             write_basic_package_version_file(
+            #                 ${CMAKE_CURRENT_BINARY_DIR}/${PROJ_NAME}-config-version.cmake
+            #                 VERSION ${diclp_ARG_VERSION}
+            #                 COMPATIBILITY SameMajorVersion
+            #             )
+            #             message(STATUS "[${PROJ_NAME}] file written: ${CMAKE_CURRENT_BINARY_DIR}/${PROJ_NAME}-config-version.cmake")
+
+
+            set(_lib_bin_prefix "${_lib_bin_dir}/${PROJ_NAME}")
+
+            install(FILES
+                "${_lib_bin_dir}/${PROJ_NAME}"
+                DESTINATION
+                ${CONFIG_PACKAGE_INSTALL_DIR}/MacOS # GUI app
+            )
+
+            install(FILES
+                "${_lib_bin_dir}/${PROJ_NAME}"
+                DESTINATION
+                ${CONFIG_PACKAGE_INSTALL_DIR}/Resources/app/bin # cli app
+            )
+
+            # # Install target and header
+            # install(DIRECTORY ${_lib_inc_prefix}
+            #     DESTINATION include
+            #     FILES_MATCHING PATTERN "${PROJ_PREFIX}*.hh")
+            # 
+            # if(EXISTS ${_lib_inc_prefix}.hh)
+            #     install(FILES ${_lib_inc_prefix}.hh DESTINATION include)
+            #     message(STATUS "[${PROJ_NAME}] install header file: ${_lib_inc_prefix}.hh")
+            # elseif(EXISTS ${_lib_inc_prefix}-cxx.hh)
+            #     install(FILES ${_lib_inc_prefix}-cxx.hh DESTINATION include)
+            #     message(STATUS "[${PROJ_NAME}] install header file: ${_lib_inc_prefix}-cxx.hh")
+            # endif()
+            # 
+            # install(FILES
+            #     ${CMAKE_CURRENT_BINARY_DIR}/${PROJ_NAME}-config.cmake
+            #     ${CMAKE_CURRENT_BINARY_DIR}/${PROJ_NAME}-config-version.cmake
+            #     DESTINATION
+            #     ${CONFIG_PACKAGE_INSTALL_DIR})
+            # 
+            # # Only export target when using imported targets
+            # if(${${PROJ_PREFIX}_HAS_IMPORTED_TARGETS})
+            #     install(TARGETS ${PROJ_NAME}
+            #         EXPORT ${PROJ_NAME}-targets
+            #         DESTINATION lib)
+            # 
+            #     install(EXPORT ${PROJ_NAME}-targets
+            #         NAMESPACE libs::
+            #         DESTINATION
+            #         ${CONFIG_PACKAGE_INSTALL_DIR}
+            #     )
+            # endif()
+
+        endif(dicep_ARG_INSTALL) # INSTALL
+
+        # option(${PROJ_PREFIX}_BUILD_TESTS_EXAMPLES "build tests and examples" OFF)
+        #
+        # if(${${PROJ_PREFIX}_BUILD_TESTS_EXAMPLES} OR (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL CMAKE_SOURCE_DIR))
+        #     if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/examples/")
+        #         enable_testing()
+        #         add_subdirectory(examples/)
+        #     endif()
+        #     if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/tests/")
+        #         enable_testing()
+        #         add_subdirectory(tests/)
+        #     endif()
+        #     if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/test/")
+        #         enable_testing()
+        #         add_subdirectory(test/)
+        #     endif()
+        # endif()
+
+
+        option(${PROJ_PREFIX}_PACKAGING "enabled CPack and packaging" OFF)
+        if(${dicep_ARG_PACK} OR ${${PROJ_PREFIX}_PACKAGING})
+            message(STATUS "[${PROJ_NAME}] CPack enabled.")
+            # set(CPACK_PROJECT_NAME ${PROJ_NAME})
+            enable_cpack(${PROJ_NAME})
+        endif()
+
+
+        if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/docs/")
+            set(dicep_ARG_BUILD_DOCS OFF)
+        endif()
+        option(${PROJ_PREFIX}_BUILD_DOCS "build documentations" ${dicep_ARG_BUILD_DOCS})
+        debug_print_value(${PROJ_PREFIX}_BUILD_DOCS)
+
+        if(${PROJ_PREFIX}_BUILD_DOCS AND (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL CMAKE_SOURCE_DIR))
+            if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/docs/")
+                find_package(Doxygen)
+
+                if(NOT DOXYGEN_FOUND)
+                    set(${PROJ_PREFIX}_BUILD_DOCS OFF)
+                else()
+                    if(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
+                        set(${PROJ_PREFIX}_BUILD_DOCS ON)
+                    endif()
+
+                    if((${USE_DEBUG}) OR ($ENV{CI_RUNNING}))
+                        set(${PROJ_PREFIX}_BUILD_DOCS OFF)
+                    endif()
+                endif()
+
+                if(${PROJ_PREFIX}_BUILD_DOCS)
+                    message(STATUS "- docs/ including | doxygen ....")
+
+                    # Find all the public headers
+                    set(MY_PUBLIC_HEADER_DIR "${_lib_inc_dir}")
+                    debug_print_value(MY_PUBLIC_HEADER_DIR)
+
+                    file(GLOB_RECURSE MY_PUBLIC_HEADERS ${MY_PUBLIC_HEADER_DIR}/*.hh)
+                    debug_print_list_value(MY_PUBLIC_HEADER_DIR)
+                    debug_print_value(PROJECT_SOURCE_DIR)
+
+                    # set(DOXYGEN_INPUT_DIR ${PROJECT_SOURCE_DIR} )
+                    set(DOXYGEN_INPUT_DIR ${PROJECT_SOURCE_DIR}/)
+                    set(DOXYGEN_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/docs/doxygen)
+
+                    # set(DOXYGEN_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/doxygen)
+                    set(DOXYFILE_OUT ${CMAKE_CURRENT_BINARY_DIR}/docs/doxygen/Doxyfile)
+                    set(DOXYGEN_INDEX_FILE ${DOXYGEN_OUTPUT_DIR}/html/index.html)
+                    set(DOXYFILE_IN ${CMAKE_CURRENT_SOURCE_DIR}/docs/${PROJECT_MACRO_MID_NAME}.in.doxygen)
+
+                    # Replace variables inside @@ with the current values
+                    configure_file(${DOXYFILE_IN} ${DOXYFILE_OUT} @ONLY)
+
+                    file(MAKE_DIRECTORY ${DOXYGEN_OUTPUT_DIR}) # Doxygen won't create this for us
+                    add_custom_command(OUTPUT ${DOXYGEN_INDEX_FILE}
+                        DEPENDS ${MY_PUBLIC_HEADERS}
+                        COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYFILE_OUT}
+
+                        # COMMAND
+                        # $<$<CONFIG:Release>:${DOXYGEN_EXECUTABLE} ${DOXYFILE_OUT}>
+                        # $<$<NOT:$<CONFIG:Release>>:${CMAKE_COMMAND} -E "echo 'Only done in Release builds'">
+                        MAIN_DEPENDENCY ${DOXYFILE_OUT} ${DOXYFILE_IN}
+                        COMMENT "Generating docs ..."
+                        VERBATIM)
+
+                    add_custom_target(Doxygen ALL DEPENDS ${DOXYGEN_INDEX_FILE})
+
+                    # install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/html DESTINATION     share/doc)
+                    add_subdirectory(docs/)
+
+                    attach_doxygen_to(${PROJ_NAME})
+                    message(STATUS "- docs/ included | doxygen ----")
+                endif()
+            else()
+                message(WARNING "docs/ folder not exists but ${PROJ_PREFIX}_BUILD_DOCS is ON.")
+            endif()
         endif()
 
     endif()
@@ -408,7 +619,7 @@ macro(define_cxx_library_project name)
       
       [INSTALL] [PACK] [GENERATE_CONFIG] [BUILD_DOCS] 
       [PREFIX <c-macro-prefix-name>]
-      [CXXSTANDARD 17/20/11]
+      [CXXSTANDARD 11/17/20/23]
       [CXXFLAGS -Wall [...]]    # cxx options, such as \"-Wdeprecated-declarations -Wno-unused-function\"
 	  [CXXDEFINITIONS A=1 B C=TRUE [...]]
       [VERSION \"\${PROJECT_VERSION}\"]
@@ -489,7 +700,7 @@ macro(define_cxx_library_project name)
             set(diclp_ARG_VERSION "${PROJECT_VERSION}")
         endif()
         if("${diclp_ARG_CXXSTANDARD}" STREQUAL "")
-            set(diclp_ARG_CXXSTANDARD "17")
+            set(diclp_ARG_CXXSTANDARD "20")
         endif()
 
         if(diclp_ARG_GENERATE_CONFIG)
@@ -718,6 +929,7 @@ set(${PROJ_NAME}_LIBRARIES ${PROJ_NAME})
             endif()
 
         endif(diclp_ARG_INSTALL) # INSTALL
+
         option(${PROJ_PREFIX}_BUILD_TESTS_EXAMPLES "build tests and examples" OFF)
 
         if(${${PROJ_PREFIX}_BUILD_TESTS_EXAMPLES} OR (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL CMAKE_SOURCE_DIR))
