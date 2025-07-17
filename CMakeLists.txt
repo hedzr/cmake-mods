@@ -51,7 +51,7 @@ define_cxx_executable_project(${PROJECT_NAME}
     CXXSTANDARD ${CXX_STANDARD}
 
     INSTALL # installable?
-    # PACK # CPack?
+    PACK # CPack?
     GENERATE_CONFIG # generate config.h and version.h
 
     # BUILD_DOCS    # build docs with doxygen? 
