@@ -92,10 +92,10 @@ jobs:
 
           - os: ubuntu-latest
             compiler: llvm-13.0.0
-          - os: ubuntu-latest
-            developer_mode: ON
-          - os: ubuntu-latest
-            build_type: Debug
+          # - os: ubuntu-latest
+          #   developer_mode: ON
+          # - os: ubuntu-latest
+          #   build_type: Debug
 
         include:
           # Add appropriate variables for gcov version required. This will intentionally break
@@ -253,9 +253,9 @@ jobs:
           # gcovr, opencppcoverage, kcov
           # python, powershell, sevenzip, tar
 
-      - name: Cleanup Conan system packages (they are not properly cached)
-        run: |
-          conan remove -f '*/system'
+      # - name: Cleanup Conan system packages (they are not properly cached)
+      #   run: |
+      #     conan remove -f '*/system'
 
       # # https://github.com/marketplace/actions/setup-ccache-action
       # # https://github.com/Chocobo1/setup-ccache-action
