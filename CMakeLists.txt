@@ -72,7 +72,8 @@ message(STATUS "---- defined ${PROJECT_NAME} / ${PROJECT_MACRO_NAME} -----------
 
 # #### TESTS ############################################################
 
-if(${${PROJECT_MACRO_PREFIX}_BUILD_TESTS_EXAMPLES} OR (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR))
+# if(${${PROJECT_MACRO_PREFIX}_BUILD_TESTS_EXAMPLES} OR (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR))
+if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     enable_testing()
     # add_subdirectory(examples/)
     add_subdirectory(test/)
