@@ -266,7 +266,7 @@ jobs:
 
       - name: container env tests
         # if: matrix.os != 'windows-latest'
-        if: contains(matrix.os, 'windows')
+        if: ${{ ! contains(matrix.os, 'windows') }}
         shell: bash
         run: |
           echo "RUNNER_OS:                    $RUNNER_OS"
@@ -285,7 +285,7 @@ jobs:
 
       - name: cmake env tests
         # if: matrix.os != 'windows-latest'
-        if: contains(matrix.os, 'windows')
+        if: ${{ ! contains(matrix.os, 'windows') }}
         shell: cmake -P {0}
         run: |
           message(STATUS "PROCESSOR_ARCHITEW6432        = ${PROCESSOR_ARCHITEW6432}")
