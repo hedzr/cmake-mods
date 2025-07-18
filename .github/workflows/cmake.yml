@@ -20,13 +20,14 @@ env:
   CONAN_SYSREQUIRES_MODE: enabled
   CONAN_USER_HOME: "${{ github.workspace }}/conan-cache"
   CONAN_USER_HOME_SHORT: "${{ github.workspace }}/conan-cache/short"
-  CLANG_TIDY_VERSION: "13.0.0"
+  CLANG_TIDY_VERSION: "14.0.0"
 
 jobs:
   build:
     permissions:
       contents: write
       discussions: write
+      security-events: write
     # name: ${{ matrix.config.name }}
     # runs-on: ${{ matrix.config.os }}
     runs-on: ${{ matrix.os }}
@@ -41,7 +42,7 @@ jobs:
           - macos-14 # arm64
           - macos-13
         compiler:
-          - llvm-13.0.0
+          - llvm-14.0.0
           - gcc-11
           # - llvm
           # - gcc
@@ -61,7 +62,7 @@ jobs:
             compiler: gcc-11
 
           - os: windows-2022
-            compiler: llvm-13.0.0
+            compiler: llvm-14.0.0
           - os: windows-2022
             developer_mode: ON
           - os: windows-2022
@@ -94,7 +95,7 @@ jobs:
             build_type: Debug
 
           - os: ubuntu-latest
-            compiler: llvm-13.0.0
+            compiler: llvm-14.0.0
           # - os: ubuntu-latest
           #   developer_mode: ON
           # - os: ubuntu-latest
@@ -106,7 +107,7 @@ jobs:
           - compiler: gcc-11
             gcov_executable: gcov
 
-          - compiler: llvm-13.0.0
+          - compiler: llvm-14.0.0
             gcov_executable: "llvm-cov gcov"
 
           # Set up preferred package generators, for given build configurations
@@ -115,6 +116,13 @@ jobs:
             package_generator: TBZ2
 
           # Windows msvc builds
+          - os: windows-2022
+            compiler: msvc
+            generator: "Visual Studio 17 2022"
+            build_type: Release
+            developer_mode: Off
+            package_generator: ZIP
+
           - os: windows-2022
             compiler: msvc
             generator: "Visual Studio 17 2022"
@@ -132,13 +140,6 @@ jobs:
           #   generator: "Visual Studio 17 2022"
           #   build_type: Debug
           #   developer_mode: Off
-
-          - os: windows-2022
-            compiler: msvc
-            generator: "Visual Studio 17 2022"
-            build_type: Release
-            developer_mode: Off
-            package_generator: ZIP
 
           # ubuntu-20.04 runner could get stuck on github ...
           # # This exists solely to make sure a non-multiconfig build works
@@ -212,8 +213,7 @@ jobs:
         # if: runner.os == 'Linux' # Linux, Windows, macOS
         run: |
           sudo apt-get update  # ensure indexes are up-to-date
-          sudo apt-get install -y \
-            libboost-dev
+          sudo apt-get install -y libboost-dev
 
       - name: Cache/CCache
         uses: actions/cache@v3
@@ -289,7 +289,7 @@ jobs:
 
       - name: cmake env tests
         # if: matrix.os != 'windows-latest'
-        if: ${{ ! contains(matrix.os, 'windows') }}
+        # if: ${{ ! contains(matrix.os, 'windows') }}
         shell: cmake -P {0}
         run: |
           message(STATUS "PROCESSOR_ARCHITEW6432        = ${PROCESSOR_ARCHITEW6432}")
@@ -314,12 +314,7 @@ jobs:
       # has meaningful results
       - name: CMake Configure
         run: |
-          cmake -S . -B ./build \
-            -G "${{matrix.generator}}" \
-            -DCMAKE_BUILD_TYPE:STRING="${{matrix.build_type}}" \
-            -DENABLE_DEVELOPER_MODE:BOOL=${{matrix.developer_mode}} \
-            -DENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' }} \
-            -DGIT_SHA:STRING=${{ github.sha }}
+          cmake -S . -B ./build -G "${{matrix.generator}}" -DCMAKE_BUILD_TYPE:STRING="${{matrix.build_type}}" -DENABLE_DEVELOPER_MODE:BOOL=${{matrix.developer_mode}} -DENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' }} -DGIT_SHA:STRING=${{ github.sha }}
 
       - name: CMake Build
         id: cmake-build
@@ -375,12 +370,12 @@ jobs:
       #     OpenCppCoverage.exe --export_type cobertura:coverage.xml --cover_children -- ctest -C ${{matrix.build_type}}
 
       - name: Install Strip
-        if: ${{ runner.os != 'Windows' && matrix.config == 'Release' }}
+        if: ${{ matrix.config == 'Release' }}
         run: cmake --install build --prefix instdir --strip
 
       - name: Pack
         working-directory: instdir
-        if: ${{ runner.os != 'Windows' && matrix.config == 'Release' && matrix.package_generator != '' }}
+        if: ${{ matrix.config == 'Release' && matrix.package_generator != '' }}
         # if: contains(github.ref, 'tags/v')
         run: |
           # cmake -E tar cfv ../${{ matrix.config.artifact }} --format=7zip .
@@ -389,7 +384,7 @@ jobs:
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v2
-        if: ${{ startsWith(github.ref, 'refs/tags/') && runner.os != 'Windows' && matrix.config == 'Release' && matrix.package_generator != '' }}
+        if: ${{ startsWith(github.ref, 'refs/tags/') && matrix.config == 'Release' && matrix.package_generator != '' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
