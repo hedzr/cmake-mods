@@ -375,11 +375,12 @@ jobs:
       #     OpenCppCoverage.exe --export_type cobertura:coverage.xml --cover_children -- ctest -C ${{matrix.build_type}}
 
       - name: Install Strip
+        if: ${{ runner.os != 'Windows' && matrix.config == 'Release' }}
         run: cmake --install build --prefix instdir --strip
 
       - name: Pack
         working-directory: instdir
-        if: ${{ matrix.package_generator != '' }}
+        if: ${{ runner.os != 'Windows' && matrix.config == 'Release' && matrix.package_generator != '' }}
         # if: contains(github.ref, 'tags/v')
         run: |
           # cmake -E tar cfv ../${{ matrix.config.artifact }} --format=7zip .
@@ -388,7 +389,7 @@ jobs:
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v2
-        if: ${{ startsWith(github.ref, 'refs/tags/') && matrix.package_generator != '' }}
+        if: ${{ startsWith(github.ref, 'refs/tags/') && runner.os != 'Windows' && matrix.config == 'Release' && matrix.package_generator != '' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
