@@ -115,12 +115,27 @@ jobs:
             developer_mode: OFF
             package_generator: TBZ2
 
+          - os: macOS-14
+            build_type: Release
+            developer_mode: OFF
+            package_generator: DMG
+
+          - os: macOS-13
+            build_type: Release
+            developer_mode: OFF
+            package_generator: DMG
+
+          - os: ubuntu-latest
+            build_type: Release
+            developer_mode: OFF
+            package_generator: DEB
+
           # Windows msvc builds
           - os: windows-2022
             compiler: msvc
             generator: "Visual Studio 17 2022"
             build_type: Release
-            developer_mode: Off
+            developer_mode: OFF
             package_generator: ZIP
 
           - os: windows-2022
