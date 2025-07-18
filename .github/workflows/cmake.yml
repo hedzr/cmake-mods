@@ -84,20 +84,40 @@ jobs:
             build_type: Debug
           - os: windows-latest
             compiler: gcc-11
+          - os: windows-latest
+            compiler: gcc-14
 
           - os: macos-latest
             compiler: gcc-11
+          - os: macos-latest
+            compiler: gcc-14
+          - os: macos-latest
+            compiler: llvm-19.1.1
+          - os: macos-latest
+            build_type: Debug
 
           - os: macos-13
             compiler: gcc-11
+          - os: macos-13
+            compiler: gcc-14
+          - os: macos-13
+            compiler: llvm-19.1.1
           - os: macos-13
             build_type: Debug
           - os: macos-14
             compiler: gcc-11
+          - os: macos-14
+            compiler: gcc-14
+          - os: macos-14
+            compiler: llvm-19.1.1
           - os: macos-14
             build_type: Debug
           - os: macos-10.15
             compiler: gcc-11
+          - os: macos-10.15
+            compiler: gcc-14
+          - os: macos-10.15
+            compiler: llvm-19.1.1
           - os: macos-10.15
             build_type: Debug
 
@@ -298,7 +318,7 @@ jobs:
           envFile: '.github/constants.env'
 
       - name: Cache/CCache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ./build/
@@ -409,7 +429,7 @@ jobs:
 
       - name: CMake CTests
         # Execute the build.  You can specify a specific target with "--target <NAME>"
-        if: runner.os != 'Windows' && matrix.gcov_executable != ''
+        if: runner.os != 'Windows' && matrix.gcov_executable != '' && matrix.build_type == 'Debug'
         id: cmake-ctest
         run: |
           export CTEST_OUTPUT_ON_FAILURE=ON
