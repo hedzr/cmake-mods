@@ -329,13 +329,13 @@ jobs:
 
       - name: CMake CTests
         # Execute the build.  You can specify a specific target with "--target <NAME>"
-        if: runner.os != 'Windows'
+        if: runner.os != 'Windows' && matrix.gcov_executable != ''
         id: cmake-ctest
         run: |
           export CTEST_OUTPUT_ON_FAILURE=ON
-          cmake -V -E chdir ./build ctest --config "${{matrix.build_type}}"
+          cmake -E chdir ./build ctest -V -C "${{matrix.build_type}}"
           cd ./build
-          gcovr -j ${{env.nproc}} --delete --root ../ --print-summary --xml-pretty --xml coverage.xml . --gcov-executable '${{ matrix.gcov_executable }}'
+          gcovr --delete --root ../ --print-summary --xml-pretty --xml coverage.xml . --gcov-executable '${{ matrix.gcov_executable }}'
 
       # - name: Run tests
       #   if: runner.os != 'Windows'
