@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.21) # FOR `cmake -G "Visual Studio 17 2022" -A ARM64`
 # cmake_minimum_required(VERSION 3.0.0)
 # cmake_minimum_required(VERSION 3.9..3.25)
 
