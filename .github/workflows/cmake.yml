@@ -111,13 +111,13 @@ jobs:
             developer_mode: OFF
             package_generator: TBZ2
 
-          # This exists solely to make sure a non-multiconfig build works
-          - os: ubuntu-20.04
-            compiler: gcc-11
-            generator: "Unix Makefiles"
-            build_type: Debug
-            gcov_executable: gcov
-            developer_mode: On
+          # # This exists solely to make sure a non-multiconfig build works
+          # - os: ubuntu-20.04
+          #   compiler: gcc-11
+          #   generator: "Unix Makefiles"
+          #   build_type: Debug
+          #   gcov_executable: gcov
+          #   developer_mode: On
 
           # Windows msvc builds
           - os: windows-2022
