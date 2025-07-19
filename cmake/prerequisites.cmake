@@ -30,9 +30,12 @@ message(STATUS "| CMAKE_MODULE_PATH             = ${CMAKE_MODULE_PATH}")
 check_cmake_modules_dir(${CMAKE_CURRENT_SOURCE_DIR} "cmake")
 
 # check_cmake_modules_dir(${CMAKE_SOURCE_DIR})
+get_property(is_multi_config GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 message(STATUS "| CMAKE_MODULE_PATH             = ${CMAKE_MODULE_PATH}")
 message(STATUS "| CMAKE_TOOLCHAIN_FILE          = ${CMAKE_TOOLCHAIN_FILE}")
 message(STATUS "| VCPKG_TARGET_TRIPLET          = $ENV{VCPKG_TARGET_TRIPLET}") # =x64-windows, ...
+message(STATUS "| CMAKE_GENERATOR               = ${CMAKE_GENERATOR}")
+message(STATUS "| is_multi_config               = ${is_multi_config}")
 message("")
 
 include(add-policies)
