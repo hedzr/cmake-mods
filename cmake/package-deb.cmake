@@ -4,7 +4,14 @@ set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
 # https://cmake.org/cmake/help/latest/module/CPack.html
 # https://cmake.org/cmake/help/latest/cpack_gen/deb.html#cpack_gen:CPack%20DEB%20Generator
 
-set(CPACK_DEBIAN_PACKAGE_NAME "lib${CPACK_PACKAGE_NAME}-dev")
+get_target_property(target_type ${PROJECT_NAME} TYPE)
+if(target_type STREQUAL "EXECUTABLE")
+    # Process executable target
+    set(CPACK_DEBIAN_PACKAGE_NAME "${CPACK_PACKAGE_NAME}")
+else()
+    set(CPACK_DEBIAN_PACKAGE_NAME "lib${CPACK_PACKAGE_NAME}-dev")
+endif()
+
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER ${CPACK_PACKAGE_CONTACT})
 set(CPACK_DEBIAN_PACKAGE_DESCRIPTION ${CPACK_PACKAGE_DESCRIPTION})
 
@@ -30,5 +37,6 @@ else()
 endif()
 
 set(CPACK_TARGET_FILE_NAME "${PROJECT_NAME}_${PROJECT_VERSION}_${CPU_ARCH_NAME}.deb")
+set(CPACK_DEB_FILE_NAME "${CPACK_TARGET_FILE_NAME}")
 #set(CPACK_TARGET_FILE_NAME "${CPACK_DEBIAN_FILE_NAME}")
 message(STATUS "CPACK_DEB_FILE_NAME = ${CPACK_DEB_FILE_NAME}")
