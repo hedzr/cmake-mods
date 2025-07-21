@@ -16,7 +16,7 @@ endmacro(add_to_cmake_module_path loc)
 macro(check_cmake_modules_dir loc name)
     if(EXISTS ${loc}/${name})
         set(CMAKE_SCRIPTS "${name}")
-        message(STATUS "CMAKE_SCRIPTS <- ${name}")
+        # message(STATUS "CMAKE_SCRIPTS <- ${name}")
 
         add_to_cmake_module_path("${loc}")
         add_to_cmake_module_path("${loc}/${CMAKE_SCRIPTS}")
