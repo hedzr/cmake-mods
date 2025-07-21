@@ -451,12 +451,19 @@ jobs:
       #   with:
       #     update_packager_index: false
 
+      - name: Set VERSION variable from tag
+        run: |
+          echo "VERSION=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+
       - name: container env tests
         # if: matrix.os != 'windows-latest'
         if: ${{ ! contains(matrix.config.os, 'windows') }}
         shell: bash
         run: |
           echo "RUNNER_OS:                    $RUNNER_OS"
+          echo "VERSION:                      $VERSION"
+          echo "RELEASE TAGNAME:              ${{ github.event.release.tag_name }}"
           echo "uname -p (processor):         $(uname -p)"
           echo "uname -s (kernel name):       $(uname -s)"
           echo "uname -r (kernel release):    $(uname -r)"
@@ -598,7 +605,8 @@ jobs:
         with:
           generate_release_notes: true
           discussion_category_name: Announcements
-          tag_name: ${{ github.ref.replace(/^(refs\/tags\/)/, '') }}
+          # tag_name: ${{ github.ref }}
+          tag_name: ${{ github.event.release.tag_name }}
           # release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
