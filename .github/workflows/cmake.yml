@@ -598,7 +598,7 @@ jobs:
         with:
           generate_release_notes: true
           discussion_category_name: Announcements
-          tag_name: ${{ github.ref }}
+          tag_name: ${{ github.ref.replace(/^(refs\/tags\/)/, '') }}
           # release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
