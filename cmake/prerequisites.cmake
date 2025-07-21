@@ -4,20 +4,25 @@
 
 macro(add_to_cmake_module_path loc)
     if(NOT "${loc}" IN_LIST CMAKE_MODULE_PATH)
-        set(CMAKE_MODULE_PATH
-            ${loc} # for .version.cmake & .options.cmake
-            ${CMAKE_MODULE_PATH}
-        )
+        if(EXISTS "${loc}")
+            set(CMAKE_MODULE_PATH
+                ${loc} # for .version.cmake & .options.cmake
+                ${CMAKE_MODULE_PATH}
+            )
+        endif()
     endif()
 endmacro(add_to_cmake_module_path loc)
 
 macro(check_cmake_modules_dir loc name)
     if(EXISTS ${loc}/${name})
         set(CMAKE_SCRIPTS "${name}")
+        message(STATUS "CMAKE_SCRIPTS <- ${name}")
 
         add_to_cmake_module_path("${loc}")
         add_to_cmake_module_path("${loc}/${CMAKE_SCRIPTS}")
         add_to_cmake_module_path("${loc}/${CMAKE_SCRIPTS}/Modules")
+        add_to_cmake_module_path("${loc}/${CMAKE_SCRIPTS}/cmake-mods/${CMAKE_SCRIPTS}")
+        add_to_cmake_module_path("${loc}/${CMAKE_SCRIPTS}/cmake-mods/${CMAKE_SCRIPTS}/Modules")
     endif(EXISTS ${loc}/${name})
     if(EXISTS ${loc}/addons)
         add_to_cmake_module_path("${loc}/addons")
