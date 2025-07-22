@@ -397,6 +397,28 @@ jobs:
         with:
           envFile: '.github/constants.env'
 
+      - name: Set VERSION variable from tag
+        if: ${{ startsWith(github.ref, 'refs/tags/') }}
+        run: |
+          VERSION="${{ github.event.release.tag_name }}"
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          echo "PROJECT:                      $PROJECT_NAME"
+          echo "VERSION:                      $VERSION"
+          echo "RELEASE TAGNAME:              ${{ github.event.release.tag_name }}"
+
+      - name: Set VERSION variable from tag
+        if: ${{ ! startsWith(github.ref, 'refs/tags/') }}
+        run: |
+          if [ -f .version.cmake ]; then
+            VERSION="v$(cat .version.cmake|grep -Eo 'VERSION \d+\.\d+\.\d+'|awk '{print $2}')"
+          else
+            VERSION="$(git describe --tags --abbrev=0 2>/dev/null || echo v0.0.1)"
+          fi
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          echo "PROJECT:                      $PROJECT_NAME"
+          echo "VERSION:                      $VERSION"
+          echo "RELEASE TAGNAME:              ${{ github.event.release.tag_name }}"
+
       - name: Cache/CCache
         uses: actions/cache@v4
         with:
@@ -450,11 +472,6 @@ jobs:
       #   uses: Chocobo1/setup-ccache-action@v1
       #   with:
       #     update_packager_index: false
-
-      - name: Set VERSION variable from tag
-        run: |
-          echo "VERSION=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
-          echo "VERSION=${VERSION}" >> $GITHUB_ENV
 
       - name: container env tests
         # if: matrix.os != 'windows-latest'
