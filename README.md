@@ -1,4 +1,4 @@
-# cmake-1
+# cmake-mods
 
 ```bash
 git submodule add https://github.com/hedzr/cmake-mods.git cmake/cmake-mods
@@ -32,9 +32,9 @@ define_cxx_library_project(${PROJECT_NAME}
     # BUILD_DOCS    # build docs with doxygen? 
     # CXXSTANDARD 20
 
-    # SOURCES
-    #   core.cc
-    #   driver.cc
+    SOURCES
+      main.cc
+      # driver.cc
 
     HEADERS
     #   ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_MACRO_NAME}-all.hh
