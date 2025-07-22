@@ -335,7 +335,7 @@ macro(define_cxx_executable_project name)
         endif()
         if(NOT "${dicep_ARG_INSTALL_INC_DIR}" STREQUAL "")
             set(_lib_bin_dir "${dicep_ARG_INSTALL_INC_DIR}")
-        elseif(${dicep_ARG_INCLUDE_DIRECTORIES})
+        else() # if(${dicep_ARG_INCLUDE_DIRECTORIES})
             list(GET dicep_ARG_INCLUDE_DIRECTORIES 0 _lib_bin_dir)
         endif()
         get_filename_component(_lib_bin_dir ${_lib_bin_dir} REALPATH)
@@ -344,7 +344,7 @@ macro(define_cxx_executable_project name)
         set(_lib_inc_dir include)
         if(NOT "${dicep_ARG_INSTALL_INC_DIR}" STREQUAL "")
             set(_lib_inc_dir "${dicep_ARG_INSTALL_INC_DIR}")
-        elseif(${dicep_ARG_INCLUDE_DIRECTORIES})
+        else() # if(${dicep_ARG_INCLUDE_DIRECTORIES})
             list(GET dicep_ARG_INCLUDE_DIRECTORIES 0 _lib_inc_dir)
         endif()
         get_filename_component(_lib_inc_dir ${_lib_inc_dir} REALPATH)
@@ -832,7 +832,7 @@ macro(define_cxx_library_project name)
         set(_lib_inc_dir include)
         if(NOT "${diclp_ARG_INSTALL_INC_DIR}" STREQUAL "")
             set(_lib_inc_dir "${diclp_ARG_INSTALL_INC_DIR}")
-        elseif(${diclp_ARG_INCLUDE_DIRECTORIES})
+        else() # if(${diclp_ARG_INCLUDE_DIRECTORIES})
             list(GET diclp_ARG_INCLUDE_DIRECTORIES 0 _lib_inc_dir)
         endif()
         get_filename_component(_lib_inc_dir ${_lib_inc_dir} REALPATH)
@@ -1104,8 +1104,12 @@ macro(enable_version_increaser target PROJECT_MACRO_NAME PROJECT_MACRO_SHORT_NAM
     # cannot work on a INTERFACE library target
     find_program(PYTHON_OK "python3")
     if(PYTHON_OK)
+        set(prog ${CMAKE_SOURCE_DIR}/${CMAKE_SCRIPTS}/versions-extract.py)
+        if(EXISTS ${CMAKE_SOURCE_DIR}/${CMAKE_SCRIPTS}/cmake-mods/${CMAKE_SCRIPTS}/versions-extract.py)
+            set(prog ${CMAKE_SOURCE_DIR}/${CMAKE_SCRIPTS}/cmake-mods/${CMAKE_SCRIPTS}/versions-extract.py)
+        endif()
         add_custom_command(TARGET ${target} POST_BUILD
-            COMMAND python3 ${CMAKE_SOURCE_DIR}/cmake/versions-extract.py -n "${PROJECT_MACRO_NAME}" -s "${PROJECT_MACRO_SHORT_NAME}" -m "${PROJECT_MACRO_PREFIX}" -b "${CMAKE_BINARY_DIR}"
+            COMMAND python3 ${prog} -n "${PROJECT_MACRO_NAME}" -s "${PROJECT_MACRO_SHORT_NAME}" -m "${PROJECT_MACRO_PREFIX}" -b "${CMAKE_BINARY_DIR}"
             WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
             COMMENT "extracting version code and increase build-number part..."
             VERBATIM
