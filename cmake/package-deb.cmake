@@ -4,7 +4,7 @@ set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
 # https://cmake.org/cmake/help/latest/module/CPack.html
 # https://cmake.org/cmake/help/latest/cpack_gen/deb.html#cpack_gen:CPack%20DEB%20Generator
 
-get_target_property(target_type ${PROJECT_NAME} TYPE)
+get_target_property(target_type ${CPACK_PACKAGE_NAME} TYPE)
 if(target_type STREQUAL "EXECUTABLE")
     # Process executable target
     set(CPACK_DEBIAN_PACKAGE_NAME "${CPACK_PACKAGE_NAME}")
