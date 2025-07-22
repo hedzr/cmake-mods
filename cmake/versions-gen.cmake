@@ -6,41 +6,54 @@ macro(gen_versions PROJ_NAME PROJECT_MACRO_PREFIX VERSION_H_NAME CONFIG_H_NAME A
         set(PROJ_NAME ${CMAKE_PROJECT_NAME})
     endif()
 
-    if(DEFINED PROJECT_MACRO_PREFIX)
+    if(PROJECT_MACRO_PREFIX)
     else()
         set(PROJECT_MACRO_PREFIX ${PROJ_NAME})
     endif()
 
-    if(DEFINED VERSION_H_NAME)
+    if(VERSION_H_NAME)
     else()
         set(VERSION_H_NAME "${PROJ_NAME}-version.hh")
     endif()
 
-    if(DEFINED CONFIG_H_NAME)
+    if(CONFIG_H_NAME)
     else()
         set(CONFIG_H_NAME "${PROJ_NAME}-config.hh")
     endif()
 
-    if(DEFINED ARCHIVE_NAME)
+    if(ARCHIVE_NAME)
     else()
         set(ARCHIVE_NAME ${PROJ_NAME}-${CMAKE_PROJECT_VERSION})
     endif()
 
-    if(DEFINED xVERSION_IN)
+    set(xrversion_in ${xVERSION_IN})
+    if(xVERSION_IN)
+        # message("xVERSION_IN  = '${xrversion_in}'")
     else()
-        set(xVERSION_IN ${CMAKE_SOURCE_DIR}/${CMAKE_SCRIPTS}/version.h.in)
+        set(xrversion_in "${CMAKE_SOURCE_DIR}/${CMAKE_SCRIPTS}/version.h.in")
+        if(NOT EXISTS ${xrversion_in})
+            set(xrversion_in "${CMAKE_SOURCE_DIR}/${CMAKE_SCRIPTS}/cmake-mods/${CMAKE_SCRIPTS}/version.h.in")
+        else()
+            # message("xVERSION_IN => '${xrversion_in}'")
+        endif()
+        # message("xVERSION_IN := '${xrversion_in}'")
     endif()
 
-    if(DEFINED xCONFIG_BASE_IN)
+    set(xrconfig_in ${xCONFIG_BASE_IN})
+    if(xCONFIG_BASE_IN)
     else()
-        set(xCONFIG_BASE_IN ${CMAKE_SOURCE_DIR}/${CMAKE_SCRIPTS}/config-base.h.in)
+        set(xrconfig_in ${CMAKE_SOURCE_DIR}/${CMAKE_SCRIPTS}/config-base.h.in)
+        if(NOT EXISTS ${xrconfig_in})
+            set(xrconfig_in ${CMAKE_SOURCE_DIR}/${CMAKE_SCRIPTS}/cmake-mods/${CMAKE_SCRIPTS}/config-base.h.in)
+        endif()
     endif()
 
     set(xOUT_DIR ${CMAKE_GENERATED_DIR})
 
-    message("||           gen_version() : output-dir -> ${xOUT_DIR}")
-    message("||   Using version.in file : ${xVERSION_IN}, ARCHIVE_NAME = ${ARCHIVE_NAME}, PROJECT_MACRO_PREFIX = ${PROJECT_MACRO_PREFIX}")
-    message("||                           CMAKE_SOURCE_DIR = ${CMAKE_SOURCE_DIR}")
+    message("||              gen_version() : output-dir -> ${xOUT_DIR}")
+    message("||   Using version.hh.in file : ${xrversion_in}, ARCHIVE_NAME = ${ARCHIVE_NAME}, PROJECT_MACRO_PREFIX = ${PROJECT_MACRO_PREFIX}")
+    message("||    Using config.hh.in file : ${xrconfig_in}")
+    message("||           CMAKE_SOURCE_DIR = ${CMAKE_SOURCE_DIR}")
 
     if(EXISTS "${CMAKE_SOURCE_DIR}/.git")
         # git describe --tags --abbrev=0   # 0.1.0-dev
@@ -115,19 +128,19 @@ macro(gen_versions PROJ_NAME PROJECT_MACRO_PREFIX VERSION_H_NAME CONFIG_H_NAME A
     set(_output_dir ${xOUT_DIR})
     # set(_output_dir ${CMAKE_CURRENT_BINARY_DIR})
 
-    if(EXISTS ${xVERSION_IN})
-        message("||    Generating version.h from ${xVERSION_IN} to ${_output_dir} - Version ${PROJECT_VERSION}...")
+    if(EXISTS ${xrversion_in})
+        message("||    Generating version.h from ${xrversion_in} to ${_output_dir} - Version ${PROJECT_VERSION}...")
         configure_file(
-            ${xVERSION_IN}
+            ${xrversion_in}
             ${_output_dir}/${VERSION_H_NAME}
         )
         message("|| Generated: ${_output_dir}/${VERSION_H_NAME}")
     endif()
 
-    if(EXISTS ${xCONFIG_BASE_IN})
-        message("||    Generating ${CONFIG_H_NAME} from ${xCONFIG_BASE_IN} to ${_output_dir} - Version ${PROJECT_VERSION}...")
+    if(EXISTS ${xrconfig_in})
+        message("||    Generating ${CONFIG_H_NAME} from ${xrconfig_in} to ${_output_dir} - Version ${PROJECT_VERSION}...")
         configure_file(
-            ${xCONFIG_BASE_IN}
+            ${xrconfig_in}
             ${_output_dir}/${CONFIG_H_NAME}
         )
         message("|| Generated: ${_output_dir}/${CONFIG_H_NAME}")
