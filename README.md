@@ -1,7 +1,7 @@
 # cmake-1
 
 ```bash
-git submodule add https://github.com/free2w/cmake-1.git cmake/cmake-mods
+git submodule add https://github.com/hedzr/cmake-mods.git cmake/cmake-mods
 ```
 
 ```cmake title="CMakeLists.txt"
