@@ -221,8 +221,8 @@ macro(define_cxx_executable_project name)
                 ${PROJ_NAME}-version.hh
                 ${PROJ_NAME}-config.hh
                 ${PROJ_NAME}-${dicep_ARG_VERSION}
-                ${CMAKE_SOURCE_DIR}/${CMAKE_SCRIPTS}/version.h.in
-                ${CMAKE_SOURCE_DIR}/${CMAKE_SCRIPTS}/config-base.h.in
+                "" # ${CMAKE_SOURCE_DIR}/${CMAKE_SCRIPTS}/version.h.in
+                "" # ${CMAKE_SOURCE_DIR}/${CMAKE_SCRIPTS}/config-base.h.in
             )
         endif()
 
@@ -571,8 +571,8 @@ macro(define_cxx_executable_project name)
     #            ${PROJ_NAME}-version.hh
     #            ${PROJ_NAME}-config.hh
     #            ${PROJ_NAME}-${PROJECT_VERSION}
-    #            ${CMAKE_SOURCE_DIR}/${CMAKE_SCRIPTS}/version.h.in
-    #            ${CMAKE_SOURCE_DIR}/${CMAKE_SCRIPTS}/config-base.h.in
+    #            "" # ${CMAKE_SOURCE_DIR}/${CMAKE_SCRIPTS}/version.h.in
+    #            "" # ${CMAKE_SOURCE_DIR}/${CMAKE_SCRIPTS}/config-base.h.in
     #            )
     #
     #    # message(STATUS "----------- s1, executable: ${PROJ_NAME} ------------")
@@ -739,8 +739,8 @@ macro(define_cxx_library_project name)
                 ${PROJ_NAME}-version.hh
                 ${PROJ_NAME}-config.hh
                 ${PROJ_NAME}-${diclp_ARG_VERSION}
-                ${CMAKE_SOURCE_DIR}/${CMAKE_SCRIPTS}/version.h.in
-                ${CMAKE_SOURCE_DIR}/${CMAKE_SCRIPTS}/config-base.h.in
+                "" # ${CMAKE_SOURCE_DIR}/${CMAKE_SCRIPTS}/version.h.in
+                "" # ${CMAKE_SOURCE_DIR}/${CMAKE_SCRIPTS}/config-base.h.in
             )
         endif()
 
