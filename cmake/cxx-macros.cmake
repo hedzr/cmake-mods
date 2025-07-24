@@ -1739,6 +1739,18 @@ function(define_example_program name)
         # Catch2::Catch2
         # fmt::fmt-header-only
     )
+    if(${${PROJECT_MACRO_PREFIX}_ASAN_TEST})
+        set(SANITIZE_ADDRESS TRUE)
+        target_compile_options(${_proj_name} PRIVATE -DASAN_TEST_ENABLED=1 -Wno-array-bounds)
+    endif()
+    if(${${PROJECT_MACRO_PREFIX}_TSAN_TEST})
+        set(SANITIZE_THREAD TRUE)
+        target_compile_options(${_proj_name} PRIVATE -DTSAN_TEST_ENABLED=1)
+    endif()
+    if(${${PROJECT_MACRO_PREFIX}_ASAN_TEST} OR ${${PROJECT_MACRO_PREFIX}_TSAN_TEST})
+        find_package(Sanitizers)
+        add_sanitizers(${_proj_name})
+    endif()
 
 
     if(NOT define_example_program_ARG_FLEX AND NOT define_example_program_ARG_BISON)
