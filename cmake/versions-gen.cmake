@@ -80,13 +80,17 @@ macro(gen_versions PROJ_NAME PROJECT_MACRO_PREFIX VERSION_H_NAME CONFIG_H_NAME A
             OUTPUT_STRIP_TRAILING_WHITESPACE
             ERROR_QUIET
         )
-        execute_process(
-            COMMAND git rev-parse HEAD
-            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-            OUTPUT_VARIABLE GIT_COMMIT_HASH
-            OUTPUT_STRIP_TRAILING_WHITESPACE
-            ERROR_QUIET
-        )
+        if(DEFINED GIT_SHA)
+            set(GIT_COMMIT_HASH "${GIT_SHA}")
+        else()
+            execute_process(
+                COMMAND git rev-parse HEAD
+                WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+                OUTPUT_VARIABLE GIT_COMMIT_HASH
+                OUTPUT_STRIP_TRAILING_WHITESPACE
+                ERROR_QUIET
+            )
+        endif()
         execute_process(
             COMMAND git log -1 --format=%h
             WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
@@ -98,7 +102,7 @@ macro(gen_versions PROJ_NAME PROJECT_MACRO_PREFIX VERSION_H_NAME CONFIG_H_NAME A
         set(GIT_BRANCH "master")
         set(GIT_LAST_TAG "HEAD")
         set(GIT_LAST_TAG_LONG "HEAD")
-        set(GIT_COMMIT_HASH "")
+        set(GIT_COMMIT_HASH "${GIT_SHA}")
         set(GIT_COMMIT_REV "")
     endif()
 
