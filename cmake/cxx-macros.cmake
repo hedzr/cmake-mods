@@ -1404,8 +1404,8 @@ function(define_test_program name)
     endif()
     # debug_print_value(define_test_program_ARG_CXXSTANDARD)
 
-    list(APPEND define_test_program_ARG_INCLUDE_DIRECTORIES
-        "${CMAKE_SOURCE_DIR}/include" "${CMAKE_CURRENT_SOURCE_DIR}/include")
+    # list(APPEND define_test_program_ARG_INCLUDE_DIRECTORIES
+    #    "${CMAKE_SOURCE_DIR}/include" "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
     add_executable(${_proj_name} ${_src_list})
 
@@ -1439,7 +1439,8 @@ function(define_test_program name)
         PUBLIC
         ${define_test_program_ARG_INCLUDE_DIRECTORIES}
         PRIVATE
-        # $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
         $<BUILD_INTERFACE:${CMAKE_GENERATED_DIR}>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
 
