@@ -120,6 +120,7 @@ macro(define_cxx_executable_target name)
         PACK # CPack?
         GENERATE_CONFIG # generate config.h and version.h
         BUILD_DOCS # build docs with doxygen? 
+        IPO # enable IPO mode
     )
     set(dicep_PARAM_ONE_VALUE_KEYWORDS
         PREFIX # PROJ_PREFIX
@@ -147,7 +148,7 @@ macro(define_cxx_executable_target name)
     )
 
     set(dicep_usage "define_cxx_executable_target(<Name>
-      [INSTALL] [PACK] [GENERATE_CONFIG] [BUILD_DOCS] 
+      [INSTALL] [PACK] [GENERATE_CONFIG] [BUILD_DOCS] [IPO] 
       [PREFIX <c-macro-prefix-name>]
       [CXXSTANDARD 11/17/20/23]
       [CXXFLAGS -Wall [...]]
@@ -247,7 +248,16 @@ macro(define_cxx_executable_target name)
 
         debug_print_value(PROJ_NAME)
         debug_print_value(PROJ_PREFIX)
+
         add_executable(${PROJ_NAME} ${dicep_ARG_SOURCES})
+
+        if(dicep_ARG_IPO)
+            cxx_set_ipo(${PROJ_NAME})
+            message(STATUS "enable IPO mode")
+        elseif(${${PROJECT_MACRO_NAME}_ENABLE_IPO})
+            message(STATUS "${PROJECT_MACRO_NAME}_ENABLE_IPO == ${${PROJECT_MACRO_NAME}_ENABLE_IPO} | enable IPO mode")
+            cxx_set_ipo(${PROJ_NAME})
+        endif()
 
         target_sources(${PROJ_NAME} PRIVATE
             "$<BUILD_INTERFACE:${dicep_ARG_DETAILED_HEADERS};${dicep_ARG_HEADERS}>")
@@ -617,6 +627,7 @@ macro(define_cxx_library_target name)
         PACK # CPack?
         GENERATE_CONFIG # generate config.h and version.h
         BUILD_DOCS # build docs with doxygen? 
+        IPO # enable IPO mode
     )
     set(diclp_PARAM_ONE_VALUE_KEYWORDS
         PREFIX # PROJ_PREFIX
@@ -648,7 +659,7 @@ macro(define_cxx_library_target name)
     set(diclp_usage "define_cxx_library_target(<Name>
       [INTERFACE | STATIC | SHARED | MODULE]
       
-      [INSTALL] [PACK] [GENERATE_CONFIG] [BUILD_DOCS] 
+      [INSTALL] [PACK] [GENERATE_CONFIG] [BUILD_DOCS] [IPO]
       [PREFIX <c-macro-prefix-name>]
       [CXXSTANDARD 11/17/20/23]
       [CXXFLAGS -Wall [...]]    # cxx options, such as \"-Wdeprecated-declarations -Wno-unused-function\"
@@ -768,6 +779,14 @@ macro(define_cxx_library_target name)
         add_library(${PROJ_NAME} ${_diclp_type})
         add_library(libs::${PROJ_NAME} ALIAS ${PROJ_NAME})
         add_library(${PROJ_NAME}::${PROJ_NAME} ALIAS ${PROJ_NAME})
+
+        if(dicep_ARG_IPO)
+            message(STATUS "enable IPO mode")
+            cxx_set_ipo(${PROJ_NAME})
+        elseif(${${PROJECT_MACRO_NAME}_ENABLE_IPO})
+            message(STATUS "${PROJECT_MACRO_NAME}_ENABLE_IPO == ${${PROJECT_MACRO_NAME}_ENABLE_IPO} | enable IPO mode")
+            cxx_set_ipo(${PROJ_NAME})
+        endif()
 
         set_target_properties(${PROJ_NAME} PROPERTIES LINKER_LANGUAGE CXX)
 
