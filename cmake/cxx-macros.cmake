@@ -484,15 +484,6 @@ macro(define_cxx_executable_target name)
         # option(PKG_GENERATOR "packaging generator for CPack" "")
         if(${dicep_ARG_PACK} OR ${${PROJ_PREFIX}_PACKAGING})
             message(STATUS "[${PROJ_NAME}] CPack enabled.")
-            # # set(CPACK_PROJECT_NAME ${PROJ_NAME})
-            # if("${PKG_GENERATOR}" STREQUAL "DEB")
-            #     include(package-deb)
-            # elseif("${PKG_GENERATOR}" STREQUAL "DMG")
-            #     include(package-dmg)
-            # elseif("${PKG_GENERATOR}" STREQUAL "RPM")
-            #     include(package-rpm)
-            # else()
-            # endif()
             include(packaging)
             enable_cpack(${PROJ_NAME})
         endif()
@@ -675,7 +666,7 @@ macro(define_cxx_library_target name)
       [PREFIX <c-macro-prefix-name>]
       [CXXSTANDARD 11/17/20/23]
       [CXXFLAGS -Wall [...]]    # cxx options, such as \"-Wdeprecated-declarations -Wno-unused-function\"
-	  [CXXDEFINITIONS A=1 B C=TRUE [...]]
+      [CXXDEFINITIONS A=1 B C=TRUE [...]]
       [VERSION \"\${PROJECT_VERSION}\"]
       [HEADERS a.hh b.hh ...]
       [DETAILED_HEADERS detail/a.hh...]
@@ -691,7 +682,7 @@ macro(define_cxx_library_target name)
       
       Unparsed Params Are:
       ${diclp_ARG_UNPARSED_ARGUMENTS}
-	")
+    ")
 
     if(NOT "${diclp_ARG_UNPARSED_ARGUMENTS}" STREQUAL "")
         message(SEND_ERROR ${diclp_usage})
@@ -1033,15 +1024,6 @@ set(${PROJ_NAME}_LIBRARIES ${PROJ_NAME})
         option(${PROJ_PREFIX}_PACKAGING "enabled CPack and packaging" OFF)
         if(${diclp_ARG_PACK} OR ${${PROJ_PREFIX}_PACKAGING})
             message(STATUS "[${PROJ_NAME}] CPack enabled.")
-            # if("${PKG_GENERATOR}" STREQUAL "DEB")
-            #     include(package-deb)
-            # elseif("${PKG_GENERATOR}" STREQUAL "DMG")
-            #     include(package-dmg)
-            # elseif("${PKG_GENERATOR}" STREQUAL "RPM")
-            #     include(package-rpm)
-            # else()
-            # endif()
-            # # set(CPACK_PROJECT_NAME ${PROJ_NAME})
             include(packaging)
             enable_cpack(${PROJ_NAME})
         endif()
@@ -1337,7 +1319,7 @@ function(define_test_program name)
     set(define_test_program_usage "define_test_programe(<Name>
      [CXXSTANDARD 17/20/11]
      [CXXFLAGS -Wall [...]]
-	 [CXXDEFINITIONS A=1 B C=TRUE [...]]
+     [CXXDEFINITIONS A=1 B C=TRUE [...]]
      [VERSION \"\${PROJECT_VERSION}\"]
      [HEADERS a.hh b.hh ...]
      [DETAILED_HEADERS detail/a.hh...]
