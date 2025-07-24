@@ -606,7 +606,7 @@ endmacro()
 #      we assume the *.cmake put at "${CMAKE_SOURCE_DIR}/${CMAKE_SCRIPTS}"
 #      includes version.h.in and config-base.h.in
 #
-macro(define_cxx_library_project name)
+macro(define_cxx_library_target name)
     set(diclp_PARAM_OPTIONS
         INTERFACE # interface or public
         STATIC
@@ -645,7 +645,7 @@ macro(define_cxx_library_project name)
         ${ARGN}
     )
 
-    set(diclp_usage "define_cxx_library_project(<Name>
+    set(diclp_usage "define_cxx_library_target(<Name>
       [INTERFACE | STATIC | SHARED | MODULE]
       
       [INSTALL] [PACK] [GENERATE_CONFIG] [BUILD_DOCS] 
