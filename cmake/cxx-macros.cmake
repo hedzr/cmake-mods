@@ -1500,6 +1500,18 @@ function(define_test_program name)
             #            target_link_options(${_proj_name} PRIVATE -fsanitize=address)
         endif()
     endif()
+    if(${${PROJECT_MACRO_PREFIX}_ASAN_TEST})
+        set(SANITIZE_ADDRESS TRUE)
+        target_compile_options(${_proj_name} PRIVATE -DASAN_TEST_ENABLED=1 -Wno-array-bounds)
+    endif()
+    if(${${PROJECT_MACRO_PREFIX}_TSAN_TEST})
+        set(SANITIZE_THREAD TRUE)
+        target_compile_options(${_proj_name} PRIVATE -DTSAN_TEST_ENABLED=1)
+    endif()
+    if(${${PROJECT_MACRO_PREFIX}_ASAN_TEST} OR ${${PROJECT_MACRO_PREFIX}_TSAN_TEST})
+        find_package(Sanitizers)
+        add_sanitizers(${_proj_name})
+    endif()
 
     target_link_libraries(${_proj_name}
         PRIVATE
