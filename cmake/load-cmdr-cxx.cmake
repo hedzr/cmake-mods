@@ -1,7 +1,7 @@
 #
 # TO LOADING CMDR11 / CMDR-CXX EASILY:
 #
-#	define_cxx_executable_project(myapp
+#	define_cxx_executable_target(myapp
 # 		PREFIX myapp
 # 		LIBRARIES ${myapp_libs}
 # 		SOURCES ${myapp_source_files}

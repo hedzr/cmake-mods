@@ -22,7 +22,7 @@ debug_print_project_title()
 set(CXX_STANDARD 20 CACHE STRING "Define The C++ Standard, default is 20")
 enable_cxx_standard(CXX_STANDARD)
 
-define_cxx_library_project(${PROJECT_NAME}
+define_cxx_library_target(${PROJECT_NAME}
     INTERFACE
     PREFIX ${PROJECT_MACRO_PREFIX}
     INSTALL # installable?

@@ -46,7 +46,7 @@ enable_cxx_standard(CXX_STANDARD)
 # enable_sanitizer_for_multi_config()
 
 message(STATUS "---- define ${PROJECT_NAME} / ${PROJECT_MACRO_NAME} ------------")
-define_cxx_executable_project(${PROJECT_NAME}
+define_cxx_executable_target(${PROJECT_NAME}
     PREFIX ${PROJECT_MACRO_PREFIX}
     CXXSTANDARD ${CXX_STANDARD}
 
