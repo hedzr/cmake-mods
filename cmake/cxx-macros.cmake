@@ -227,8 +227,7 @@ macro(define_cxx_executable_target name)
             )
         endif()
 
-        list(APPEND dicep_ARG_INCLUDE_DIRECTORIES
-            "${CMAKE_CURRENT_SOURCE_DIR}/include")
+        # list(APPEND dicep_ARG_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/include" "SAFETY")
         if(MSVC)
             set(_diclp_opts
                 -D_CRT_SECURE_NO_WARNINGS # using getenv() ...
@@ -293,7 +292,7 @@ macro(define_cxx_executable_target name)
             PUBLIC
             ${dicep_ARG_INCLUDE_DIRECTORIES}
             PRIVATE
-            # $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
             $<BUILD_INTERFACE:${CMAKE_GENERATED_DIR}>
             $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
         )
