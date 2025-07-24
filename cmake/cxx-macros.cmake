@@ -113,8 +113,8 @@ function(prepend var prefix)
 endfunction(prepend)
 
 
-# define_cxx_executable_project
-macro(define_cxx_executable_project name)
+# define_cxx_executable_target
+macro(define_cxx_executable_target name)
     set(dicep_PARAM_OPTIONS
         INSTALL # installable?
         PACK # CPack?
@@ -146,7 +146,7 @@ macro(define_cxx_executable_project name)
         ${ARGN}
     )
 
-    set(dicep_usage "define_cxx_executable_project(<Name>
+    set(dicep_usage "define_cxx_executable_target(<Name>
       [INSTALL] [PACK] [GENERATE_CONFIG] [BUILD_DOCS] 
       [PREFIX <c-macro-prefix-name>]
       [CXXSTANDARD 11/17/20/23]
