@@ -1,0 +1,19 @@
+# CHANGELOG
+
+- v0.3.1
+  - update `cxx-macros.cmake`
+    - rename to `define_cxx_library_target`
+    - rename to `define_cxx_executable_target`
+    - add `IPO` switch to define_xxx
+    - fix include-dirs in `define_cxx_executable_target`
+    - fix include-dirs in `define_cxx_library_target`
+    - fix include-dirs in `define_test_program`
+    - add sanitizer to `define_cxx_executable_target`
+    - add sanitizer to `define_cxx_library_target`
+  - added `cxx-compilers-per-project.cmake`, which will be used in `define_cxx_library_target` & `define_cxx_executable_target`
+  - added `debug_print_target_prop` to `debug-cmd.cmake`
+  - update `cxx-detect-compilers.cmake`
+  - update `utils.cmake`, fixed `debug_dump_target_inc_dirs`
+  - update `versions-gen.cmake`, fix usage to `GIT_SHA`
+  - update `packaging.cmake`, add usages to `PKG_GENERATOR` and `PACKAGING_GENERATOR`
+  - update `prerequisites.cmake`, update ccache integrated section
