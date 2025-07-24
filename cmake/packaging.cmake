@@ -62,7 +62,19 @@ else()
     message(STATUS ">>>> Found unknown distribution (DISTRO_NAME=${DISTRO_NAME}, ID=${DISTRO_ID}) <<<<")
 endif()
 
-message(STATUS ">>>> DISTRO_NAME=${DISTRO_NAME}, ID=${DISTRO_ID} <<<<")
+message(STATUS ">>>> CPack generator '${CPACK_GENERATOR}' used (auto-detected). DISTRO_NAME=${DISTRO_NAME}, ID=${DISTRO_ID}. <<<<")
+
+if(DEFINED PKG_GENERATOR)
+    set(CPACK_GENERATOR "${PKG_GENERATOR}")
+    # set(CPACK_RPM_FILE_NAME RPM-DEFAULT)
+    message(STATUS ">>>> CPack generator '${CPACK_GENERATOR}' used (from PKG_GENERATOR). [${PROJECT_MACRO_NAME}] <<<<")
+endif()
+
+if(DEFINED PACKAGING_GENERATOR)
+    set(CPACK_GENERATOR "${PACKAGING_GENERATOR}")
+    # set(CPACK_RPM_FILE_NAME RPM-DEFAULT)
+    message(STATUS ">>>> CPack generator '${CPACK_GENERATOR}' used (from PACKAGING_GENERATOR). [${PROJECT_MACRO_NAME}] <<<<")
+endif()
 
 #if (NOT CPack_CMake_INCLUDED)
 # #
