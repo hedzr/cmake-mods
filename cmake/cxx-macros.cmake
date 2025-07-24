@@ -767,8 +767,7 @@ macro(define_cxx_library_target name)
             )
         endif()
 
-        list(APPEND diclp_ARG_INCLUDE_DIRECTORIES
-            "${CMAKE_CURRENT_SOURCE_DIR}/include")
+        # list(APPEND diclp_ARG_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/include" "SAFETY")
         if(MSVC)
             set(_diclp_opts
                 -D_CRT_SECURE_NO_WARNINGS # using getenv() ...
@@ -784,10 +783,18 @@ macro(define_cxx_library_target name)
                 #-D${PROJECT_MACRO_PREFIX}_UNIT_TEST=${_${PROJECT_MACRO_NAME}_unit_test}
             )
         endif()
+        if(${${PROJECT_MACRO_PREFIX}_ASAN_TEST})
+            set(_diclp_opts -DASK_ASAN_TEST=1)
+        endif()
+        if(${${PROJECT_MACRO_PREFIX}_TSAN_TEST})
+            set(_diclp_opts -DASK_TSAN_TEST=1)
+        endif()
         list(APPEND _diclp_opts "${diclp_ARG_CXXFLAGS}")
 
         debug_print_value(PROJ_NAME)
         debug_print_value(PROJ_PREFIX)
+        debug_print_value(_macro_name_prefix)
+
         add_library(${PROJ_NAME} ${_diclp_type})
         add_library(libs::${PROJ_NAME} ALIAS ${PROJ_NAME})
         add_library(${PROJ_NAME}::${PROJ_NAME} ALIAS ${PROJ_NAME})
@@ -823,7 +830,7 @@ macro(define_cxx_library_target name)
                 $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
                 $<INSTALL_INTERFACE:$<CMAKE_CURRENT_BINARY_DIR>>
                 PRIVATE
-                # $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+                $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
                 $<BUILD_INTERFACE:${CMAKE_GENERATED_DIR}>
                 # SYSTEM PRIVATE
                 $<INSTALL_INTERFACE:$<INSTALL_PREFIX>/include>
