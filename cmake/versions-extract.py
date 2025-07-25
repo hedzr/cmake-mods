@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 
 #  @copy    Copyright (c) 2025 - 2031, hedzr.
-# 
+#
 #  @detail  ask-cxx - C++17/C++20 Text Difference Utilities Library
-# 
+#
 #  @note    This file is part of ask-lang/ask1x.
-# 
+#
 #  @license ask-lang toolset is free software: you can redistribute
 #           it and/or modify it under the terms of
 #           the Apache 2.0 License.
 #           Read /LICENSE for more information.
-# 
+#
 #
 #  ask - C++17/C++20 Text Difference Utilities Library
 #
@@ -50,7 +50,7 @@ class VersionExtractor:
             )
         )
         self.re_ver = re.compile(
-            r"^set\(VERSION ([0-9]+)(\.[0-9]+)(\.[0-9]+)(\.[0-9]+)\)$"
+            r"^set\(VERSION ([0-9]+)(\.[0-9]+)(\.[0-9]+)(\.([0-9]+|(\$.+)))\)$"
         )
         self.ok = False
 
@@ -59,6 +59,73 @@ class VersionExtractor:
             with open(self.build_serial_file, "r", encoding="utf-8") as fp:
                 self.build_serial = int(fp.read().rstrip())
                 self.build_serial += 1
+
+    def load_version_cmake(self):
+        data_keys = list(self.data.keys()).copy()
+        for dn in [".version.cmake", ".version.local.cmake", ".version.cmake.sample"]:
+            filename = os.path.join(self.base_path, dn)
+            need_update = False
+            never_update = False
+            if not self.ok and os.path.isfile(filename):
+                with open(filename, "r") as fp:
+                    print("> checking {} ...".format(filename))
+                    for l in fp:
+                        m = self.re_ver.match(l)
+                        if m:
+                            # print(
+                            #     "groups: {} | group(0): {} | group(2): {}".format(
+                            #         m.groups(), m.group(0), m.group(2).lstrip(".")
+                            #     )
+                            # )
+                            for ix, n in enumerate(data_keys, start=1):
+                                try:
+                                    self.data[n] = int(m.group(ix).lstrip("."))
+                                except ValueError:
+                                    print("piece #{}: {}".format(ix, m.group(ix)))
+                                    never_update = True
+                            # print("got from {}, {} <- {}".format(filename, n, data[n]))
+                            print(
+                                "serial: {}, RELEASE: {}".format(
+                                    self.build_serial, self.data["RELEASE"]
+                                )
+                            )
+                            if self.build_serial < self.data["RELEASE"] + 1:
+                                need_update = True
+                                self.data["RELEASE"] += 1
+                                self.build_serial = self.data["RELEASE"]
+                            elif self.build_serial >= self.data["RELEASE"] + 1:
+                                need_update = True
+                            self.data["RELEASE"] = self.build_serial
+                            print(
+                                "serial: {}, RELEASE: {}".format(
+                                    self.build_serial, self.data["RELEASE"]
+                                )
+                            )
+                            self.ok = True
+            if (
+                self.ok
+                and os.path.isfile(filename)
+                and need_update
+                and not never_update
+            ):
+                print("write back to {}".format(filename))
+                with open(filename, "w") as fp:
+                    fp.seek(0)
+                    fp.truncate()
+                    if never_update:
+                        # fp.write('file(READ ".build-serial" BUILD_SERIAL)\n')
+                        # fp.write(
+                        #     "set(VERSION {MAJOR}.{MINOR}.{PATCH}.${{BUILD_SERIAL}})".format(
+                        #         **self.data
+                        #     )
+                        # )
+                        pass
+                    else:
+                        fp.write(
+                            "set(VERSION {MAJOR}.{MINOR}.{PATCH}.{RELEASE})".format(
+                                **self.data
+                            )
+                        )
 
     def update_build_serial(self):
         updated = False
@@ -80,49 +147,6 @@ class VersionExtractor:
                 cf = os.path.join(self.base_path, dn, "CMakeCache.txt")
                 if os.path.isfile(cf):
                     os.system("cmake --fresh -B {}".format(dn))
-
-    def load_version_cmake(self):
-        data_keys = list(self.data.keys()).copy()
-        for dn in [".version.local.cmake", ".version.cmake.sample"]:
-            filename = os.path.join(self.base_path, dn)
-            need_update = False
-            if not self.ok and os.path.isfile(filename):
-                with open(filename, "r") as fp:
-                    # print("checking {}".format(filename))
-                    for l in fp:
-                        m = self.re_ver.match(l)
-                        if m:
-                            # print(
-                            #     "groups: {} | group(0): {} | group(2): {}".format(
-                            #         m.groups(), m.group(0), m.group(2).lstrip(".")
-                            #     )
-                            # )
-                            for ix, n in enumerate(data_keys, start=1):
-                                self.data[n] = int(m.group(ix).lstrip("."))
-                                # print("got from {}, {} <- {}".format(filename, n, data[n]))
-                            print(
-                                "serial: {}, RELEASE: {}".format(
-                                    self.build_serial, self.data["RELEASE"]
-                                )
-                            )
-                            if self.build_serial < self.data["RELEASE"] + 1:
-                                need_update = True
-                                self.data["RELEASE"] += 1
-                                self.build_serial = self.data["RELEASE"]
-                            elif self.build_serial > self.data["RELEASE"] + 1:
-                                need_update = True
-                            self.data["RELEASE"] = self.build_serial
-                            self.ok = True
-            if self.ok and os.path.isfile(filename) and need_update:
-                print("write back to {}".format(filename))
-                with open(filename, "w") as fp:
-                    fp.seek(0)
-                    fp.truncate()
-                    fp.write(
-                        "set(VERSION {MAJOR}.{MINOR}.{PATCH}.{RELEASE})".format(
-                            **self.data
-                        )
-                    )
 
     def load_version_hh(self):
         # lookup xxx-version.hh in build/, cmake-build-debug/, ...
@@ -147,22 +171,25 @@ class VersionExtractor:
                                 self.data[m.group(1)] = int(m.group(3))
                                 ok = True
                                 self.data["RELEASE"] = self.build_serial
-                                # print(
-                                #     "got from {}, {} <- {}".format(
-                                #         filename, m.group(1), m.group(3)
-                                #     )
-                                # )
+                                print(
+                                    "got from {}, {} <- {}".format(
+                                        filename, m.group(1), m.group(3)
+                                    )
+                                )
 
     def print_it(self):
-        print("{MAJOR}.{MINOR}.{PATCH}".format(**self.data))
+        print("#        post-build-run: {}".format(os.path.basename(__file__)))
+        print("                version: {MAJOR}.{MINOR}.{PATCH}".format(**self.data))
         # print("{MAJOR}.{MINOR}.{PATCH}.{RELEASE}".format(**self.data))
-        print("+{}".format(self.data["RELEASE"]))  # print build serial number too
-        print("# post-build-run: {}".format(os.path.basename(__file__)))
         print(
-            """#   project name: {name}, short: {sname}
-#   c-style name: {cname}
-#     macro name: {mname}
-#      build dir: {build_dir}
+            "           build-serial: +{}".format(self.data["RELEASE"])
+        )  # print build serial number too
+        print(
+            """#
+#          project name: {name}, short: {sname}
+#          c-style name: {cname}
+#     macro name/prefix: {mname}
+#             build dir: {build_dir}
 """.format(
                 **self.args
             )
@@ -238,6 +265,7 @@ class VersionExtractor:
 #
 # # print("+{}".format(data["RELEASE"])) # print build serial number too
 
+
 def main(argv=sys.argv[1:]):
     parser = argparse.ArgumentParser(
         prog="versions-extractor",
@@ -259,7 +287,7 @@ def main(argv=sys.argv[1:]):
         "-r",
         "--refresh",
         # action=argparse.BooleanOptionalAction,
-        action='store_true',
+        action="store_true",
         default=False,
         help="refresh cmake configure?",
     )
