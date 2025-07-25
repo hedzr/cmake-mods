@@ -31,6 +31,7 @@ project(${PROJECT_MACRO_NAME}
     VERSION ${VERSION}
     DESCRIPTION "${PROJECT_MACRO_MID_NAME} - cmake module suite for cxx-dev."
     LANGUAGES CXX)
+include(cxx-compilers-per-project)
 debug_print_project_title()
 
 # Enable C++ Standard 17/20 here. Change it on fist configuring, or update it with new value:
@@ -53,6 +54,7 @@ define_cxx_executable_target(${PROJECT_NAME}
     INSTALL # installable?
     PACK # CPack?
     GENERATE_CONFIG # generate config.h and version.h
+    IPO
 
     # BUILD_DOCS    # build docs with doxygen? 
 
@@ -65,6 +67,7 @@ define_cxx_executable_target(${PROJECT_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_MACRO_MID_NAME}.hh
     ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_MACRO_MID_NAME}/${PROJECT_MACRO_SHORT_NAME}-all.hh
 )
+enable_version_increaser(${PROJECT_MACRO_NAME} ${PROJECT_MACRO_NAME} ${PROJECT_MACRO_SHORT_NAME} ${PROJECT_MACRO_PREFIX})
 message(STATUS "---- defined ${PROJECT_NAME} / ${PROJECT_MACRO_NAME} ------------")
 
 # add_subdirectory(src/)
