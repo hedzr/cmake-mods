@@ -1,4 +1,8 @@
-# CHANGELOG
+# CHANGELOG & HISTORY
+
+- v0.3.3
+  - fix `versions-extract.py`, make it work for new style `.version.cmake` template
+  - more
 
 - v0.3.1
   - update `cxx-macros.cmake`
