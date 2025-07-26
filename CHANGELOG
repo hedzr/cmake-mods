@@ -1,5 +1,8 @@
 # CHANGELOG & HISTORY
 
+- v0.3.5
+  - fix `versions-extract.py`
+
 - v0.3.3
   - fix `versions-extract.py`, make it work for new style `.version.cmake` template
   - more
