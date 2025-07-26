@@ -1,7 +1,7 @@
 
 include(CMakePrintHelpers)
 # cmake_print_variables(
-#     TARGETS libs::${PROJECT_NAME} # demo2 # ask-cli demo1 demo2 # foo bar
+#     TARGETS libs::${PROJECT_NAME} # demo2 # mere1x-cli demo1 demo2 # foo bar
 #     PROPERTIES LOCATION INTERFACE_INCLUDE_DIRECTORIES
 # )
 include(FeatureSummary)

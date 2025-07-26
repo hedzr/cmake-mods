@@ -2,21 +2,21 @@
 
 #  @copy    Copyright (c) 2025 - 2031, hedzr.
 #
-#  @detail  ask-cxx - C++17/C++20 Text Difference Utilities Library
+#  @detail  mere-cxx - C++17/C++20 Text Difference Utilities Library
 #
-#  @note    This file is part of ask-lang/ask1x.
+#  @note    This file is part of mere-lang/mere1x.
 #
-#  @license ask-lang toolset is free software: you can redistribute
+#  @license mere-lang toolset is free software: you can redistribute
 #           it and/or modify it under the terms of
 #           the Apache 2.0 License.
 #           Read /LICENSE for more information.
 #
 #
-#  ask - C++17/C++20 Text Difference Utilities Library
+#  mere-cxx - C++17/C++20 Text Difference Utilities Library
 #
-#  This file is part of ask-lang/ask1x.
+#  This file is part of mere-lang/mere1x.
 #
-#  ask-lang toolset is free software: you can redistribute it and/or modify
+#  mere-lang toolset is free software: you can redistribute it and/or modify
 #  it under the terms of the Apache 2.0 License.
 #  Read /LICENSE for more information.
 #
@@ -294,7 +294,7 @@ def main(argv=sys.argv[1:]):
     args = parser.parse_args()
     # print(args)
     if not args.name:
-        print("FAIL: --name(-n) is required. Try: versions-extractor.py -n ask-cxx")
+        print("FAIL: --name(-n) is required. Try: versions-extractor.py -n undecor-cxx")
         exit(-1)
     if not args.cname:
         args.cname = args.name.replace("-", "_").lower()
