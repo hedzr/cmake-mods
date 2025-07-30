@@ -126,6 +126,7 @@ macro(define_cxx_executable_target name)
         PREFIX # PROJ_PREFIX
         CXXSTANDARD # such as CXXSTANDARD 17
         VERSION # default is ${PROJECT_VERSION}
+        FOLDER # cmake target hierarchy
     )
     set(dicep_PARAM_MULTI_VALUE_KEYWORDS
         CXXFLAGS # cxx compiler options
@@ -249,6 +250,11 @@ macro(define_cxx_executable_target name)
         debug_print_value(PROJ_PREFIX)
 
         add_executable(${PROJ_NAME} ${dicep_ARG_SOURCES})
+        if(_diclp_FOLDER)
+            set_target_properties(${PROJ_NAME} PROPERTIES FOLDER "Executables/${FOLDER}")
+        else()
+            set_target_properties(${PROJ_NAME} PROPERTIES FOLDER "Executables")
+        endif()
 
         if(dicep_ARG_IPO)
             cxx_set_ipo(${PROJ_NAME})
@@ -638,6 +644,7 @@ macro(define_cxx_library_target name)
         # OPTIONS            # cxx compiler options
         VERSION # default is ${PROJECT_VERSION}
         INSTALL_INC_DIR # headers in <INSTALL_INC_DIR>/<Name> will be installed
+        FOLDER # cmake target hierarchy
     )
     set(diclp_PARAM_MULTI_VALUE_KEYWORDS
         CXXFLAGS # cxx compiler options
@@ -789,6 +796,11 @@ macro(define_cxx_library_target name)
         add_library(${PROJ_NAME} ${_diclp_type})
         add_library(libs::${PROJ_NAME} ALIAS ${PROJ_NAME})
         add_library(${PROJ_NAME}::${PROJ_NAME} ALIAS ${PROJ_NAME})
+        if(_diclp_FOLDER)
+            set_target_properties(${PROJ_NAME} PROPERTIES FOLDER "Libraries/${FOLDER}")
+        else()
+            set_target_properties(${PROJ_NAME} PROPERTIES FOLDER "Libraries")
+        endif()
 
         if(dicep_ARG_IPO)
             message(STATUS "enable IPO mode")
@@ -1295,6 +1307,7 @@ function(define_test_program name)
         PREFIX
         CXXSTANDARD # such as CXXSTANDARD 17
         VERSION # default is ${PROJECT_VERSION}
+        FOLDER # cmake target hierarchy
     )
     set(define_test_program_PARAM_MULTI_VALUE_KEYWORDS
         CXXFLAGS # cxx compiler options
@@ -1390,6 +1403,11 @@ function(define_test_program name)
     #    "${CMAKE_SOURCE_DIR}/include" "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
     add_executable(${_proj_name} ${_src_list})
+    if(define_test_program_ARG_FOLDER)
+        set_target_properties(${_proj_name} PROPERTIES FOLDER "Tests/${FOLDER}")
+    else()
+        set_target_properties(${_proj_name} PROPERTIES FOLDER "Tests/CTest")
+    endif()
 
     # debug_print_value(_proj_name)
     add_cxx_standard_to(${_proj_name} ${define_test_program_ARG_CXXSTANDARD})
@@ -1548,6 +1566,7 @@ function(define_example_program name)
         PREFIX
         CXXSTANDARD # such as CXXSTANDARD 17
         VERSION # default is ${PROJECT_VERSION}
+        # FOLDER # cmake target hierarchy
     )
     set(define_example_program_PARAM_MULTI_VALUE_KEYWORDS
         CXXFLAGS # cxx compiler options
@@ -1639,6 +1658,12 @@ function(define_example_program name)
     #     "${CMAKE_SOURCE_DIR}/include" "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
     add_executable(${_proj_name} ${_src_list})
+    # FOLDER # cmake target hierarchy
+    if(define_example_program_ARG_FOLDER)
+        set_target_properties(${_proj_name} PROPERTIES FOLDER "Examples/${FOLDER}")
+    else()
+        set_target_properties(${_proj_name} PROPERTIES FOLDER "Examples")
+    endif()
 
     # debug_print_value(_proj_name)
     add_cxx_standard_to(${_proj_name} ${define_example_program_ARG_CXXSTANDARD})
