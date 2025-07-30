@@ -1,5 +1,9 @@
 # CHANGELOG & HISTORY
 
+- v0.3.6
+  - improved cxx-macros.cmake
+    - add folder propertiy to exe, lib, test, example target for better view within cmake targets hirarchical structure
+
 - v0.3.5
   - fix `versions-extract.py`
 
