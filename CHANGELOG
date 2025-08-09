@@ -1,5 +1,13 @@
 # CHANGELOG & HISTORY
 
+- v0.3.7
+  - make load-llvm deprecated
+  - added new llvm-helpers, updated it
+    - `add_llvm_target`, `add_llvm_test_target`
+      - `add_llvm_supports`
+        - `define_basics_llvm_target`
+          - `llvm_config`
+
 - v0.3.6
   - improved cxx-macros.cmake
     - add folder propertiy to exe, lib, test, example target for better view within cmake targets hirarchical structure
