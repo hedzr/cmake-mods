@@ -48,18 +48,20 @@ include(add-policies)
 cmake_policy(SET CMP0048 NEW) # disable not-defined warning about VERSION
 include(debug-cmd)
 
+################# For CMAKE_BUILD_TYPE #################
+
 set(default_build_type "Release")
 
 if(EXISTS "${CMAKE_SOURCE_DIR}/.git")
     set(default_build_type "Debug")
 endif()
 
-debug_print_value(CMAKE_BUILD_TYPE)
-
 if("${CMAKE_BUILD_TYPE}" STREQUAL "" AND "${CMAKE_CONFIGURATION_TYPES}" STREQUAL "")
-    message(STATUS "Setting build type to '${default_build_type}' as none was specified.")
+    message(STATUS "Setting build type to '${default_build_type}' as none was specified. Old CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}")
     set(CMAKE_BUILD_TYPE "${default_build_type}" CACHE
         STRING "Choose the type of build." FORCE)
+else()
+    debug_print_value(CMAKE_BUILD_TYPE)
 endif()
 
 if("${CMAKE_CONFIGURATION_TYPES}" STREQUAL "")
@@ -107,8 +109,8 @@ endif()
 message(STATUS ">>> DEBUG MODE: ${CMAKE_BUILD_TYPE} -> ${CMAKE_BUILD_NAME}, '${CMAKE_DEBUG_POSTFIX}' ...")
 message(STATUS ">>> USE_DEBUG_MALLOC = ${USE_DEBUG_MALLOC}, USE_DEBUG = ${USE_DEBUG} ...")
 mark_as_advanced(CMAKE_BUILD_NAME) # Mark variables as used so cmake doesn't complain about them
-option(ENABLE_CCACHE "Use ccache for build" ON)
 
+option(ENABLE_CCACHE "Use ccache for build" ON)
 if(${ENABLE_CCACHE})
     find_program(CCACHE_PROGRAM ccache)
     if(CCACHE_PROGRAM)
@@ -204,6 +206,7 @@ include(options-def) # load .options.cmake
 include(pkg-mgmt) # use `load_package_manager` macro and options: USE_CONAN or USE_VCPKG
 include(utils) # more tools such as print_debug_value, ...
 include(dummy-project) # a dummy target for detecting ARCH, cxx compilers, versions ...
+
 message(STATUS " ")
 message(STATUS "| PROCESSOR_ARCHITEW6432        = ${PROCESSOR_ARCHITEW6432}")
 message(STATUS "| PROCESSOR_ARCHITECTURE        = ${PROCESSOR_ARCHITECTURE}")
