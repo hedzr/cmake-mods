@@ -94,3 +94,12 @@ debug_print_value(CMAKE_EXECUTABLE_SUFFIX)
 # foreach(i ${V})
 # message(${i})
 # endforeach()
+
+# create symbolic link at `<project-root>/bin` to target executable file
+macro(target_add_post_copy_action target)
+    # set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ~/.local/bin)
+    add_custom_command(TARGET ${target}
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E create_symlink $<TARGET_FILE:${target}> ${CMAKE_BIN_OUTPUT_DIR}/${target}
+    )
+endmacro()
