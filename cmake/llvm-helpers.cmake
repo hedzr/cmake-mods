@@ -1,3 +1,11 @@
+# llvm-helper:
+#
+#    - `add_llvm_target`, `add_llvm_test_target`
+#      - `add_llvm_supports`
+#        - `define_basics_llvm_target`
+#          - `llvm_config`
+#
+
 find_package(LLVM REQUIRED CONFIG)
 message(STATUS "---- Found LLVM ${LLVM_PACKAGE_VERSION} at ${LLVM_TOOLS_BINARY_DIR}")
 message(STATUS "---- Using LLVMConfig.cmake in: ${LLVM_DIR}")
