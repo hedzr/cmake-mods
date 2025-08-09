@@ -113,6 +113,37 @@ function(prepend var prefix)
 endfunction(prepend)
 
 
+function(cxx_set_ipo target)
+    #
+    # IPO
+    #
+    # Interprocedural optimization
+    # https://cliutils.gitlab.io/modern-cmake/chapters/features/small.html
+    if(POLICY CMP0069)
+        cmake_policy(SET CMP0069 NEW)
+    endif()
+
+    include(CheckIPOSupported) # need decl at first: cmake_minimum_required(VERSION 3.9..3.13)
+    check_ipo_supported(RESULT result)
+
+    if(result)
+        # set_target_properties(${target} PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
+        set_target_properties("${target}" PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
+        message(STATUS "IPO support enabled for target: ${target}")
+        # if(ARGV0)
+        #     set_target_properties("${ARGV0}" PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
+        #     message(STATUS "IPO supports enabled for: ${ARGV0}")
+        # else()
+        #     set_target_properties("${target}" PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
+        #     message(STATUS "IPO support enabled for target: ${target}")
+        # endif()
+    else()
+        message(STATUS "enable_ipo requested to ON, but compiler not support it: ${result}")
+    endif()
+endfunction()
+
+
+
 # define_cxx_executable_target
 macro(define_cxx_executable_target name)
     set(dicep_PARAM_OPTIONS
