@@ -1,5 +1,10 @@
 # CHANGELOG & HISTORY
 
+- v0.3.8
+  - change exe-output-dir to `<root>/bin/<build-type>`
+  - added a new post-build-action `target_add_post_copy_action` to link `<target-exe-file>` to `<root>/bin`
+  - mv `cxx_set_ipo` into cxx-macros
+
 - v0.3.7
   - make load-llvm deprecated
   - added new llvm-helpers, updated it
