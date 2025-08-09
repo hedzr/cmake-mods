@@ -1079,6 +1079,7 @@ _cmdr11-cli*
 .build-serial
 builddir/
 build-*/
+build.*/
 
 _build/
 _msvc_build/
