@@ -1,7 +1,14 @@
 find_package(LLVM REQUIRED CONFIG)
 message(STATUS "---- Found LLVM ${LLVM_PACKAGE_VERSION} at ${LLVM_TOOLS_BINARY_DIR}")
 message(STATUS "---- Using LLVMConfig.cmake in: ${LLVM_DIR}")
+message(STATUS "---- Using LLVM_CMAKE_DIR: ${LLVM_CMAKE_DIR}")
 message(STATUS "---- Using LLVM_DEFINITIONS: ${LLVM_DEFINITIONS}")
+message(STATUS "---- Using LLVM_ENABLE_EXCEPTION: ${LLVM_ENABLE_EXCEPTION}")
+message(STATUS "---- Using LLVM_ENABLE_RTTI: ${LLVM_ENABLE_RTTI}")
+list(APPEND CMAKE_MODULE_PATH ${LLVM_CMAKE_DIR})
+
+# use a llvm macro/function, including its cmake components at first
+include(AddLLVM)
 
 #llvm-config --cxxflags
 # add_compile_options(-I/opt/homebrew/opt/llvm/include -I./llvm/build/include -std=c++17
@@ -85,6 +92,26 @@ macro(llvm_config executable)
         target_link_libraries(${executable} PRIVATE LLVM)
     endif()
 
+    target_compile_definitions(${executable} INTERFACE ${LLVM_DEFINITIONS})
+    target_compile_options(${executable} INTERFACE
+        # https://stackoverflow.com/questions/53805007/compilation-failing-on-enableabibreakingchecks
+        # abi-breaking.h
+        -DLLVM_DISABLE_ABI_BREAKING_CHECKS_ENFORCING=1
+
+        # -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS
+    )
+    if(NOT ${LLVM_ENABLE_EXCEPTION})
+        target_compile_options(${executable} INTERFACE
+            -fno-exceptions
+        )
+    endif()
+    if(NOT ${LLVM_ENABLE_RTTI})
+        # For non-MSVC compilers
+        # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti")
+        target_compile_options(${executable} PRIVATE
+            -fno-rtti
+        )
+    endif()
     explicit_llvm_config(${executable} ${link_components})
 endmacro(llvm_config)
 
@@ -210,14 +237,24 @@ function(define_basics_llvm_target)
         # target_link_libraries(${new_target} INTERFACE ${LLVM_LIBRARIES})
         # target_link_options(${new_target} INTERFACE ${llvm_link_flags})
         target_compile_options(${new_target} INTERFACE
-            -fno-exceptions -fno-rtti
-
             # https://stackoverflow.com/questions/53805007/compilation-failing-on-enableabibreakingchecks
             # abi-breaking.h
             -DLLVM_DISABLE_ABI_BREAKING_CHECKS_ENFORCING=1
 
             # -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS
         )
+        if(NOT ${LLVM_ENABLE_EXCEPTION})
+            target_compile_options(${new_target} INTERFACE
+                -fno-exceptions
+            )
+        endif()
+        if(NOT ${LLVM_ENABLE_RTTI})
+            # For non-MSVC compilers
+            # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti")
+            target_compile_options(${new_target} INTERFACE
+                -fno-rtti
+            )
+        endif()
     endif()
 endfunction()
 
