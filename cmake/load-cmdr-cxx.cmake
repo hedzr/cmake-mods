@@ -41,6 +41,7 @@ macro(add_cmdr_cxx_to target)
             GIT_TAG origin/master # v0.3.13
             GIT_SHALLOW 1
             GIT_PROGRESS ON
+            GIT_SUBMODULES_RECURSE ON
 
             # STEP_TARGETS build
             # SOURCE_DIR "${PROJECT_SOURCE_DIR}/third-party/cmdr-cxx-src"
