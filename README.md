@@ -44,11 +44,11 @@ define_cxx_library_target(${PROJECT_NAME}
       # driver.cc
 
     HEADERS
-    #   ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_MACRO_NAME}-all.hh
-    ${CMAKE_GENERATED_DIR}/${PROJECT_NAME}-version.hh
-    ${CMAKE_GENERATED_DIR}/${PROJECT_NAME}-config.hh
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_MACRO_MID_NAME}.hh
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_MACRO_MID_NAME}/${PROJECT_MACRO_SHORT_NAME}-all.hh
+      #   ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_MACRO_NAME}-all.hh
+      ${CMAKE_GENERATED_DIR}/${PROJECT_NAME}-version.hh
+      ${CMAKE_GENERATED_DIR}/${PROJECT_NAME}-config.hh
+      ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_MACRO_MID_NAME}.hh
+      ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_MACRO_MID_NAME}/${PROJECT_MACRO_SHORT_NAME}-all.hh
 )
 enable_version_increaser(${PROJECT_MACRO_NAME} ${PROJECT_MACRO_NAME} ${PROJECT_MACRO_SHORT_NAME} ${PROJECT_MACRO_PREFIX})
 message(STATUS "---- defined ${PROJECT_NAME} / ${PROJECT_MACRO_NAME} ------------")
@@ -68,3 +68,7 @@ And if you would bump the project version, modifying the line 2 in this file.
 ### `.build-serial`
 
 `.build-serial` should be excluded in `.gitignore` since it has always been changed after a normal building action completed.
+
+## LICENSE
+
+Apache 2.0
