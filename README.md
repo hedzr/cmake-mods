@@ -1,5 +1,25 @@
 # cmake-mods
 
+cmake-modes includes a couple of cmake modules for our C++ projects.
+
+Some useful features are:
+
+- calculating the prerequisites for the whole workspace - `include .../prerequisites.cmake`
+- and specially for per project - `include(cxx-compilers-per-project)`
+- debug_print_XXX debug marcos
+- cmdr-cxx integrator - see the load-cmdr-cxx.cmake
+- versions increaser - `enable_version_increaser()`
+- auto generating version.hh and config.hh
+- cpack support - `enable_cpack()`
+- main target makers:
+  - `define_cxx_library_target()`
+  - `define_cxx_executable_target()`
+  - `define_test_program()`
+  - `define_example_program()`
+- more macros and functions:
+  - `attach_doxygen_to()`
+  - ...
+
 ## Usage
 
 ### download into `./cmake/cmake-mods`
@@ -15,6 +35,7 @@ cmake_minimum_required(VERSION 3.21) # FOR `cmake -G "Visual Studio 17 2022" -A 
 
 # ### INCLUDES ##########################################################
 include(${CMAKE_SOURCE_DIR}/cmake/cmake-mods/cmake/prerequisites.cmake)
+
 # ### DEFINITIONS #######################################################
 # ### OPTIONS #######################################################
 # ### PREPARATIONS #######################################################
