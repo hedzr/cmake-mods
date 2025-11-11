@@ -113,7 +113,7 @@ else()
 endif()
 
 string(TIMESTAMP BUILD_TIMESTAMP "%Y-%m-%dT%H:%M:%SZ")
-message(STATUS ">>> BUILD_TIMESTAMP = ${BUILD_TIMESTAMP}")
+message(STATUS ">>> BUILD_TIMESTAMP (CMAKE Configure Timestamp) = ${BUILD_TIMESTAMP}")
 
 #
 #

@@ -304,6 +304,7 @@ macro(define_cxx_executable_target name)
         # target_compile_features(${PROJ_NAME} PRIVATE "cxx_std_${dicep_ARG_CXXSTANDARD}")
 
         target_compile_definitions(${PROJ_NAME} PRIVATE
+            # __CMAKE_CONFIGURE_TIMESTAMP="${BUILD_TIMESTAMP}"
             ${_${PROJ_NAME}CXXDEFS}
             ${dicep_ARG_CXXDEFINITIONS}
         )
@@ -849,6 +850,7 @@ macro(define_cxx_library_target name)
             target_compile_features(${PROJ_NAME} PRIVATE "cxx_std_${diclp_ARG_CXXSTANDARD}")
 
             target_compile_definitions(${PROJ_NAME} PRIVATE
+                # __CMAKE_CONFIGURE_TIMESTAMP="${BUILD_TIMESTAMP}"
                 ${_${PROJ_NAME}CXXDEFS}
                 ${dicep_ARG_CXXDEFINITIONS}
             )
@@ -877,6 +879,7 @@ macro(define_cxx_library_target name)
             target_compile_features(${PROJ_NAME} INTERFACE "cxx_std_${diclp_ARG_CXXSTANDARD}")
 
             target_compile_definitions(${PROJ_NAME} INTERFACE
+                # __CMAKE_CONFIGURE_TIMESTAMP="${BUILD_TIMESTAMP}"
                 ${_${PROJ_NAME}CXXDEFS}
                 ${dicep_ARG_CXXDEFINITIONS}
             )
@@ -1445,6 +1448,7 @@ function(define_test_program name)
     #target_compile_features(${_proj_name}-${name} PRIVATE cxx_std_11)
     #target_compile_definitions(${_proj_name}-${name} PRIVATE)
     target_compile_definitions(${_proj_name} PRIVATE
+        # __CMAKE_CONFIGURE_TIMESTAMP="${BUILD_TIMESTAMP}"
         ${_${_proj_name}CXXDEFS}
         ${define_test_program_ARG_CXXDEFINITIONS}
         #${_macro_name_prefix}_ENABLE_ASSERTIONS=${_${_name_prefix}_enable_assertions}
@@ -1701,6 +1705,7 @@ function(define_example_program name)
     #target_compile_features(${_proj_name}-${name} PRIVATE cxx_std_11)
     #target_compile_definitions(${_proj_name}-${name} PRIVATE)
     target_compile_definitions(${_proj_name} PRIVATE
+        # __CMAKE_CONFIGURE_TIMESTAMP="${BUILD_TIMESTAMP}"
         ${_${_proj_name}CXXDEFS}
         ${define_test_program_ARG_CXXDEFINITIONS}
     )

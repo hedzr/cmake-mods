@@ -75,13 +75,25 @@
 
 /* build info */
 
-#if !defined(BUILD_TIMESTAMP) && !defined(BUILD_HOST_NAME) 
-#define BUILD_HOST_NAME         xT("@CMAKE_HOST_SYSTEM_NAME@")
-#define BUILD_HOST_CPU          xT("@CMAKE_HOST_SYSTEM_PROCESSOR@")
-#define BUILD_HOST_VERSION      xT("@CMAKE_HOST_SYSTEM_VERSION@")
-#define BUILD_HOST              xT("@CMAKE_HOST_SYSTEM@")
-#define BUILD_DISTRO            xT("@DISTRO_NAME@")    /* Just for Linux */
-#define BUILD_TIMESTAMP         xT("@BUILD_TIMESTAMP@")
+#if !defined(BUILD_HOST_NAME)
+#define BUILD_HOST_NAME    xT("@CMAKE_HOST_SYSTEM_NAME@")
+#define BUILD_HOST_CPU     xT("@CMAKE_HOST_SYSTEM_PROCESSOR@")
+#define BUILD_HOST_VERSION xT("@CMAKE_HOST_SYSTEM_VERSION@")
+#define BUILD_HOST         xT("@CMAKE_HOST_SYSTEM@")
+#define BUILD_DISTRO       xT("@DISTRO_NAME@") /* Just for Linux */
+#endif
+
+#if !defined(CONFIGURE_TIMESTAMP)
+/* this is a cmake-configure-timestamp with format '%Y-%m-%dT%H:%M:%SZ'.
+ *  std::istringstream(__BUILD_TIMESTAMP) >> std::get_time(&tm, "%Y-%m-%dT%H:%M:%SZ");
+ */
+#define CONFIGURE_TIMESTAMP xT("@BUILD_TIMESTAMP@")
+#endif
+#if !defined(BUILD_TIME)
+/* this is a compiling-or-building-timestamp with format '%b %d %Y %H:%M:%S'.
+ *  std::istringstream(BUILD_TIME) >> std::get_time(&tm, "%b %d %Y %H:%M:%S");
+ */
+#define BUILD_TIME xT(__DATE__ " " __TIME__)
 #endif
 
 /* build options */
