@@ -1,5 +1,11 @@
 # CHANGELOG & HISTORY
 
+- v0.3.11
+  - refined build_time
+    - clear about cmake variable BUILD_TIMESTAMP is actually a cmake-configure-timestamp
+    - add BUILD_TIME macro into config-base.hh so that backend can get a really compliing-time building timestamp. BUT, it has a M d yyyy date format, not a timestamp.
+    - Finally, [cmdr-cxx](https://github.com/hedzr/cmdr-cxx) project updated cmdr::test::build_time() function to compliant with these changes.
+
 - v0.3.10
   - improved `load-llvm`
 
