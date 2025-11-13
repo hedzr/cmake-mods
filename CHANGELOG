@@ -1,5 +1,8 @@
 # CHANGELOG & HISTORY
 
+- v0.3.12
+  - remove xxx_assertions/.../_unit_tests macro definitions from target_definitions
+
 - v0.3.11
   - refined build_time
     - clear about cmake variable BUILD_TIMESTAMP is actually a cmake-configure-timestamp
