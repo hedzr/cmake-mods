@@ -8,7 +8,7 @@ if(${MAC})
     if(EXISTS "${LLVM_ROOT}/bin/clang")
     else()
         set(var "")
-        foreach(var IN LISTS "/opt/homebrew/opt/llvm;/opt/homebrew/opt/llvm@25;/opt/homebrew/opt/llvm@24;/opt/homebrew/opt/llvm@23;/opt/homebrew/opt/llvm@22;/opt/homebrew/opt/llvm@21;/opt/homebrew/opt/llvm@20;/opt/homebrew/opt/llvm@19;/opt/homebrew/opt/llvm@18;/opt/homebrew/opt/llvm@17;/opt/homebrew/opt/llvm@16;/opt/homebrew/opt/llvm@15;/opt/homebrew/opt/llvm@14;/opt/homebrew/opt/llvm@13;/opt/homebrew/opt/llvm@12;/opt/homebrew/opt/llvm@11")
+        foreach(var IN LISTS "/opt/homebrew/opt/llvm;/opt/homebrew/opt/llvm@29;/opt/homebrew/opt/llvm@28;/opt/homebrew/opt/llvm@27;/opt/homebrew/opt/llvm@26;/opt/homebrew/opt/llvm@25;/opt/homebrew/opt/llvm@24;/opt/homebrew/opt/llvm@23;/opt/homebrew/opt/llvm@22;/opt/homebrew/opt/llvm@21;/opt/homebrew/opt/llvm@20;/opt/homebrew/opt/llvm@19;/opt/homebrew/opt/llvm@18;/opt/homebrew/opt/llvm@17;/opt/homebrew/opt/llvm@16;/opt/homebrew/opt/llvm@15;/opt/homebrew/opt/llvm@14;/opt/homebrew/opt/llvm@13;/opt/homebrew/opt/llvm@12;/opt/homebrew/opt/llvm@11")
             if(EXISTS "${LLVM_ROOT}/bin/clang")
             else()
                 if(EXISTS "${var}/bin/clang")
@@ -45,16 +45,18 @@ message("LLVM_CMAKE_DIR = ${LLVM_CMAKE_DIR}")
 #
 # please use llvm-helpers.cmake instead of these following settings.
 #
-if(EN
-
-    set (LLVM_TARGETS_TO_BUILD X86)
-    set (LLVM_BUILD_RUNTIME OFF)
-    set (LLVM_BUILD_TOOLS OFF)
-
-    find_package (LLVM REQUIRED CONFIG)
-    message (STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
-    message (STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
-    ABLE_LLVM_TO_GLOBAL_ENV)
+if(ENABLE_LLVM_TO_GLOBAL_ENV)
+    # endif()
+    # if(EXISTS "${LLVM_ROOT}/bin/clang")
+    # 
+    #     set(LLVM_TARGETS_TO_BUILD X86)
+    #     set(LLVM_BUILD_RUNTIME OFF)
+    #     set(LLVM_BUILD_TOOLS OFF)
+    # 
+    #     find_package(LLVM REQUIRED CONFIG)
+    #     message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
+    #     message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
+    #     set(ENABLE_LLVM_TO_GLOBAL_ENV)
 
     set(CMAKE_CXX_COMPILER_ENV_VAR "clang++")
     set(CMAKE_CXX_FLAGS "-std=c++11")
