@@ -119,6 +119,259 @@ jobs:
           # #     # https://github.com/actions/runner-images
           # # }
 
+        # os:
+        #   # - windows-2022
+        #   # - ubuntu-20.04
+        #   # - ubuntu-24.04
+        #   - ubuntu-latest
+        #   - macos-latest
+        #   - windows-latest
+        #   # - macos-14 # arm64
+        #   # - macos-13 # intel
+        # compiler:
+        #   # - llvm-14.0.0
+        #   # - gcc-11
+        #   # # - llvm
+        #   # # - gcc
+        #   # # you can specify the version after `-` like `llvm-18`.
+        #   - llvm-19.1.1
+        #   - gcc-14
+        # generator:
+        #   - "Ninja Multi-Config"
+        # build_type:
+        #   - Release
+        #   - Debug
+        # # developer_mode:
+        # #   - ON
+        # #   - OFF
+        # packaging_maintainer_mode:
+        #   - ON
+        #   - OFF
+        # build_shared:
+        #   - OFF
+
+        # exclude:
+        #   # mingw is determined by this author to be too buggy to support
+        #   - os: "windows-2022"
+        #     compiler: gcc-11
+        #   # mingw is determined by this author to be too buggy to support
+        #   - os: windows-latest
+        #     compiler: gcc-14
+
+        #   - os: windows-latest
+        #     compiler: llvm-19.1.1
+        #   # - os: windows-latest
+        #   #   developer_mode: ON
+        #   - os: windows-latest
+        #     build_type: Debug
+        #   - os: windows-latest
+        #     compiler: gcc-11
+        #   - os: windows-latest
+        #     compiler: gcc-14
+
+        #   - os: macos-latest
+        #     compiler: gcc-11
+        #   - os: macos-latest
+        #     compiler: gcc-14
+        #   - os: macos-latest
+        #     compiler: llvm-19.1.1
+        #   - os: macos-latest
+        #     build_type: Debug
+
+        #   - os: macos-13
+        #     compiler: gcc-11
+        #   - os: macos-13
+        #     compiler: gcc-14
+        #   - os: macos-13
+        #     compiler: llvm-19.1.1
+        #   - os: macos-13
+        #     build_type: Debug
+        #   - os: macos-14
+        #     compiler: gcc-11
+        #   - os: macos-14
+        #     compiler: gcc-14
+        #   - os: macos-14
+        #     compiler: llvm-19.1.1
+        #   - os: macos-14
+        #     build_type: Debug
+        #   - os: macos-10.15
+        #     compiler: gcc-11
+        #   - os: macos-10.15
+        #     compiler: gcc-14
+        #   - os: macos-10.15
+        #     compiler: llvm-19.1.1
+        #   - os: macos-10.15
+        #     build_type: Debug
+
+        #   - os: ubuntu-latest
+        #     compiler: llvm-19.1.1
+
+        #   # - os: ubuntu-latest
+        #   #   developer_mode: ON
+        #   # - os: ubuntu-latest
+        #   #   build_type: Debug
+
+        # include:
+        #   # # Add appropriate variables for gcov version required. This will intentionally break
+        #   # # if you try to use a compiler that does not have gcov set
+        #   # - compiler: gcc-11
+        #   #   gcov_executable: gcov
+        #   - compiler: gcc-14
+        #     gcov_executable: gcov-14
+        #     enable_ipo: On
+
+        #   # - compiler: llvm-14.0.0
+        #   #   gcov_executable: "llvm-cov gcov"
+        #   - compiler: llvm-19.1.1
+        #     enable_ipo: Off
+        #     gcov_executable: "llvm-cov gcov"
+
+        #   - os: macos-latest
+        #     enable_ipo: Off
+
+        #   # Set up preferred package generators, for given build configurations
+        #   - build_type: Release
+        #     packaging_maintainer_mode: On
+        #     # developer_mode: OFF
+        #     package_generator: TBZ2
+
+        #   # - os: macOS-14
+        #   #   build_type: Release
+        #   #   developer_mode: OFF
+        #   #   package_generator: DMG
+
+        #   # - os: macOS-13
+        #   #   build_type: Release
+        #   #   developer_mode: OFF
+        #   #   package_generator: DMG
+
+        #   - os: ubuntu-latest
+        #     build_type: Release
+        #     developer_mode: OFF
+        #     package_generator: DEB
+
+        #   # Windows msvc builds
+        #   - os: windows-latest
+        #     compiler: msvc
+        #     generator: "Visual Studio 17 2022"
+        #     build_type: Debug
+        #     packaging_maintainer_mode: On
+        #     enable_ipo: On
+
+        #   # - os: windows-latest
+        #   #   compiler: msvc
+        #   #   generator: "Visual Studio 17 2022"
+        #   #   build_type: Release
+        #   #   packaging_maintainer_mode: On
+        #   #   enable_ipo: On
+
+        #   # - os: windows-latest
+        #   #   compiler: msvc
+        #   #   generator: "Visual Studio 17 2022"
+        #   #   build_type: Debug
+        #   #   packaging_maintainer_mode: Off
+
+        #   - os: windows-latest
+        #     compiler: msvc
+        #     generator: "Visual Studio 17 2022"
+        #     build_type: Release
+        #     packaging_maintainer_mode: Off
+        #     package_generator: ZIP
+
+        #   # - os: windows-latest
+        #   #   compiler: msvc
+        #   #   generator: "Visual Studio 17 2022"
+        #   #   build_type: Release
+        #   #   packaging_maintainer_mode: On
+        #   #   enable_ipo: On
+        #   #   build_shared: On
+
+        #   # - os: windows-2022
+        #   #   compiler: msvc
+        #   #   generator: "Visual Studio 17 2022"
+        #   #   build_type: Release
+        #   #   developer_mode: OFF
+        #   #   package_generator: ZIP
+
+        #   # - os: windows-2022
+        #   #   compiler: msvc
+        #   #   generator: "Visual Studio 17 2022"
+        #   #   build_type: Debug
+        #   #   developer_mode: On
+
+        #   # - os: windows-2022
+        #   #   compiler: msvc
+        #   #   generator: "Visual Studio 17 2022"
+        #   #   build_type: Release
+        #   #   developer_mode: On
+
+        #   # - os: windows-2022
+        #   #   compiler: msvc
+        #   #   generator: "Visual Studio 17 2022"
+        #   #   build_type: Debug
+        #   #   developer_mode: Off
+
+        #   # # This exists solely to make sure a non-multiconfig build works
+        #   # - os: ubuntu-latest
+        #   #   compiler: gcc-14
+        #   #   generator: "Unix Makefiles"
+        #   #   build_type: Debug
+        #   #   gcov_executable: gcov-14
+        #   #   packaging_maintainer_mode: On
+        #   #   enable_ipo: Off
+        #   #
+        #   # # ubuntu-20.04 runner could get stuck on github ...
+        #   # # # This exists solely to make sure a non-multiconfig build works
+        #   # # - os: ubuntu-20.04
+        #   # #   compiler: gcc-11
+        #   # #   generator: "Unix Makefiles"
+        #   # #   build_type: Debug
+        #   # #   gcov_executable: gcov
+        #   # #   developer_mode: On
+
+        # config:
+        #   - {
+        #     name: "Windows Latest MSVC", artifact: "Windows-MSVC.7z",
+        #     os: windows-latest,
+        #     cc: "cl", cxx: "cl",
+        #     environment_script: "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Auxiliary/Build/vcvars64.bat",
+        #     tcf: "-D CMAKE_TOOLCHAIN_FILE=c:/vcpkg/scripts/buildsystems/vcpkg.cmake"
+        #
+        #     # https://github.com/actions/runner-images/blob/macos-14-arm64/20240827.4/images/windows/Windows2022-Readme.md
+        #   }
+        #   #- {
+        #   #  name: "Windows Latest MinGW", artifact: "Windows-MinGW.7z",
+        #   #  os: windows-latest,
+        #   #  cc: "gcc", cxx: "g++"
+        #   #}
+        #   - {
+        #     name: "Ubuntu Latest GCC", artifact: "Linux.7z",
+        #     os: ubuntu-latest,
+        #     cc: "gcc-12", cxx: "g++-12" # for 22.04, gcc-10, 11, 12 are valid.
+        #       # cc: "gcc-13", cxx: "g++-13"
+        #       # cc: "gcc-14", cxx: "g++-14"
+        #
+        #       # https://github.com/actions/runner-images/blob/macos-14-arm64/20240827.4/images/ubuntu/Ubuntu2204-Readme.md
+        #       # https://github.com/actions/runner-images/blob/macos-14-arm64/20240827.4/images/ubuntu/Ubuntu2404-Readme.md
+        #   }
+        #   - {
+        #     name: "macOS Latest Arm64", artifact: "macOS.7z",
+        #     os: macos-latest,
+        #     cc: "clang", cxx: "clang++"
+        #
+        #       # https://github.com/actions/runner-images/blob/macos-14-arm64/20240827.4/images/macos/macos-14-arm64-Readme.md
+        #       # https://github.com/actions/runner-images/releases/tag/macos-14-arm64%2F20240827.4
+        #   }
+        #   # macOS Latest Intel not support in free plan
+        #   # - {
+        #   #   name: "macOS Latest Intel", artifact: "macOS-intel.7z",
+        #   #   os: macos-latest-large,
+        #   #   cc: "clang", cxx: "clang++"
+        #   #
+        #   #     # https://github.com/actions/runner-images
+        #   # }
+
+
     steps:
       - name: Check for llvm version mismatches
         if: ${{ contains(matrix.config.compiler, 'llvm') && !contains(matrix.config.compiler, env.CLANG_TIDY_VERSION) }}
@@ -140,32 +393,6 @@ jobs:
       #   run: |
       #     sudo apt-get update  # ensure indexes are up-to-date
       #     sudo apt-get install -y libboost-dev
-
-      # https://github.com/aminya/setup-cpp
-      - name: Setup Cpp
-        uses: aminya/setup-cpp@v1
-        with:
-          # compiler: llvm    # llvm, gcc, msvc, apple-clang, vcvarsall
-          compiler:  ${{ matrix.config.compiler }}
-          vcvarsall: ${{ contains(matrix.config.os, 'windows' )}}
-          cmake: true       # cmake, ninja, meson, make, task, bazel
-          ninja: true       #
-          # make: false       #
-          conan: true       # vcpkg, conan, choco, brew, apt-fast, nala, git, setup-cpp
-          vcpkg: true       #
-          cppcheck: true    # instead of `true`, which chooses the default version, you can pass a specific version.
-          ccache: true      #
-          clangtidy: ${{ env.CLANG_TIDY_VERSION }}
-          # clang-tidy: true  # clang-tidy, clang-format, cppcheck, cpplint, flawfinder, lizard, infer, cmakelang, cmake-format, cmake-lint
-          doxygen: true     #
-          graphviz: true    #
-          gcovr: ${{ ! contains(matrix.config.os, 'windows' )}}
-          opencppcoverage: ${{ contains(matrix.config.os, 'windows' )}}
-          # gcovr, opencppcoverage, kcov
-          # python, powershell, sevenzip, tar
-          # python: true      #
-          # sevenzip: true    #
-          # tar: true         #
 
       - name: Project Name
         uses: cardinalby/export-env-action@v2
@@ -213,6 +440,29 @@ jobs:
           key: ${{ runner.os }}-${{ matrix.config.build_type }}-${{ matrix.config.compiler }}-${{ hashFiles('**/CMakeLists.txt', './vcpkg.json') }}
           restore-keys: |
             ${{ runner.os }}-${{ matrix.config.build_type }}-
+
+      # https://github.com/aminya/setup-cpp
+      - name: Setup Cpp
+        uses: aminya/setup-cpp@v1
+        with:
+          # compiler: llvm    # llvm, gcc, msvc, apple-clang, vcvarsall
+          compiler:  ${{ matrix.config.compiler }}
+          vcvarsall: ${{ contains(matrix.config.os, 'windows' )}}
+          cmake: true       # cmake, ninja, meson, make, task, bazel
+          ninja: true       #
+          # make: false       #
+          conan: true       # vcpkg, conan, choco, brew, apt-fast, nala, git, setup-cpp
+          vcpkg: true       #
+          cppcheck: true    # instead of `true`, which chooses the default version, you can pass a specific version.
+          ccache: true      #
+          clangtidy: ${{ env.CLANG_TIDY_VERSION }}
+          # clang-tidy: true  # clang-tidy, clang-format, cppcheck, cpplint, flawfinder, lizard, infer, cmakelang, cmake-format, cmake-lint
+          doxygen: true     #
+          graphviz: true    #
+          gcovr: ${{ ! contains(matrix.config.os, 'windows' )}}
+          opencppcoverage: ${{ contains(matrix.config.os, 'windows' )}}
+          # gcovr, opencppcoverage, kcov
+          # python, powershell, sevenzip, tar
 
       # - name: Cleanup Conan system packages (they are not properly cached)
       #   run: |
@@ -268,13 +518,6 @@ jobs:
           message(STATUS "CMAKE_HOST_SOLARIS            = ${CMAKE_HOST_SOLARIS}")
           message(STATUS "CMAKE_HOST_BSD                = ${CMAKE_HOST_BSD}")
           message(STATUS "CMAKE_LIBRARY_ARCHITECTURE    = ${CMAKE_LIBRARY_ARCHITECTURE}")
-          message(STATUS "#####")
-          message(STATUS "CMAKE_CXX_COMPILER            = ${CMAKE_CXX_COMPILER}")
-          message(STATUS "CMAKE_C_COMPILER              = ${CMAKE_C_COMPILER}")
-          message(STATUS "CMAKE_MAKE_PROGRAM            = ${CMAKE_MAKE_PROGRAM}")
-          message(STATUS "CMAKE_GENERATOR               = ${CMAKE_GENERATOR}")
-          message(STATUS "CMAKE_BUILD_TYPE              = ${CMAKE_BUILD_TYPE}")
-          message(STATUS "CMAKE_TOOLCHAIN_FILE          = ${CMAKE_TOOLCHAIN_FILE}")
 
       # make sure coverage is only enabled for Debug builds, since it sets -O0 to make sure coverage
       # has meaningful results
