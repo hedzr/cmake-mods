@@ -78,7 +78,7 @@ jobs:
             name: "Ubuntu Latest LLVM", artifact: ".tbz2",
             os: ubuntu-latest,
             # compiler: llvm-21.1.5,
-            compiler: llvm-19,
+            compiler: llvm-19.1.1,
             gcov_executable: "llvm-cov gcov",
             enable_ipo: On,
             build_type: Debug,
