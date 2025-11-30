@@ -197,11 +197,19 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 
-# ############################## include .options.cmake
+message(STATUS "")
 message(STATUS ">>> HOME: $ENV{HOME} / $ENV{USERPROFILE} ")
+message(STATUS ">>> CMAKE_CXX_COMPILER            = ${CMAKE_CXX_COMPILER}")
+message(STATUS ">>> CMAKE_C_COMPILER              = ${CMAKE_C_COMPILER}")
+message(STATUS ">>> CMAKE_MAKE_PROGRAM            = ${CMAKE_MAKE_PROGRAM}")
+message(STATUS ">>> CMAKE_GENERATOR               = ${CMAKE_GENERATOR}")
+message(STATUS ">>> CMAKE_BUILD_TYPE              = ${CMAKE_BUILD_TYPE}")
+message(STATUS "")
+message(STATUS ">>> CMAKE_TOOLCHAIN_FILE          = ${CMAKE_TOOLCHAIN_FILE}")
 message(STATUS ">>> vcpkg tests 1: env: $ENV{VCPKG_ROOT}; def: ${VCPKG_ROOT}; ")
-message(STATUS ">>> CMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}")
+message(STATUS "")
 
+# ############################## include .options.cmake and more
 include(options-def) # load .options.cmake
 include(pkg-mgmt) # use `load_package_manager` macro and options: USE_CONAN or USE_VCPKG
 include(utils) # more tools such as print_debug_value, ...
