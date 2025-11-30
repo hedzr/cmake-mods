@@ -207,25 +207,5 @@ include(pkg-mgmt) # use `load_package_manager` macro and options: USE_CONAN or U
 include(utils) # more tools such as print_debug_value, ...
 include(dummy-project) # a dummy target for detecting ARCH, cxx compilers, versions ...
 
-message(STATUS " ")
-message(STATUS "| PROCESSOR_ARCHITEW6432        = ${PROCESSOR_ARCHITEW6432}")
-message(STATUS "| PROCESSOR_ARCHITECTURE        = ${PROCESSOR_ARCHITECTURE}")
-message(STATUS "| CMAKE_APPLE_SILICON_PROCESSOR = ${CMAKE_APPLE_SILICON_PROCESSOR}")
-message(STATUS "| CMAKE_SYSTEM                  = ${CMAKE_SYSTEM}")
-message(STATUS "| CMAKE_SYSTEM_NAME             = ${CMAKE_SYSTEM_NAME}")
-message(STATUS "| CMAKE_SYSTEM_PROCESSOR        = ${CMAKE_SYSTEM_PROCESSOR}")
-message(STATUS "| CMAKE_SYSTEM_VERSION          = ${CMAKE_SYSTEM_VERSION}")
-message(STATUS "| CMAKE_HOST_SYSTEM_PROCESSOR   = ${CMAKE_HOST_SYSTEM_PROCESSOR}")
-message(STATUS "| CMAKE_HOST_SYSTEM_NAME        = ${CMAKE_HOST_SYSTEM_NAME}")
-message(STATUS "| CMAKE_HOST_SYSTEM_VERSION     = ${CMAKE_HOST_SYSTEM_VERSION}")
-message(STATUS "| CMAKE_HOST_APPLE              = ${CMAKE_HOST_APPLE}")
-message(STATUS "| CMAKE_HOST_LINUX              = ${CMAKE_HOST_LINUX}")
-message(STATUS "| CMAKE_HOST_UNIX               = ${CMAKE_HOST_UNIX}")
-message(STATUS "| CMAKE_HOST_WIN32              = ${CMAKE_HOST_WIN32}")
-message(STATUS "| CMAKE_HOST_SOLARIS            = ${CMAKE_HOST_SOLARIS}")
-message(STATUS "| CMAKE_HOST_BSD                = ${CMAKE_HOST_BSD}")
-message(STATUS "| CMAKE_LIBRARY_ARCHITECTURE    = ${CMAKE_LIBRARY_ARCHITECTURE}")
-message(STATUS "")
-
 message(STATUS ">>> end of prerequisites")
 # message("")
