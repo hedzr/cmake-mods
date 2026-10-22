@@ -250,12 +250,14 @@ macro(define_cxx_executable_target name)
         endif()
 
         if(dicep_ARG_GENERATE_CONFIG)
-            gen_versions(${PROJ_NAME} ${PROJ_PREFIX}
-                ${PROJ_NAME}-version.hh
-                ${PROJ_NAME}-config.hh
-                ${PROJ_NAME}-${dicep_ARG_VERSION}
-                "" # ${CMAKE_SOURCE_DIR}/${CMAKE_SCRIPTS}/version.h.in
-                "" # ${CMAKE_SOURCE_DIR}/${CMAKE_SCRIPTS}/config-base.h.in
+            gen_versions(
+                PROJ_NAME ${PROJ_NAME}
+                MACRO_PREFIX ${PROJ_PREFIX}
+                VERSION_HH_NAME ${PROJ_NAME}-version.hh
+                CONFIG_HH_NAME ${PROJ_NAME}-config.hh
+                ARCHIVE_NAME ${PROJ_NAME}-${dicep_ARG_VERSION}
+                # VERSION_IN ${CMAKE_SOURCE_DIR}/${CMAKE_SCRIPTS}/version.h.in
+                # CONFIG_IN ${CMAKE_SOURCE_DIR}/${CMAKE_SCRIPTS}/config-base.h.in
             )
         endif()
 
@@ -788,12 +790,14 @@ macro(define_cxx_library_target name)
         endif()
 
         if(diclp_ARG_GENERATE_CONFIG)
-            gen_versions(${PROJ_NAME} ${PROJ_PREFIX}
-                ${PROJ_NAME}-version.hh
-                ${PROJ_NAME}-config.hh
-                ${PROJ_NAME}-${diclp_ARG_VERSION}
-                "" # ${CMAKE_SOURCE_DIR}/${CMAKE_SCRIPTS}/version.h.in
-                "" # ${CMAKE_SOURCE_DIR}/${CMAKE_SCRIPTS}/config-base.h.in
+            gen_versions(
+                PROJ_NAME ${PROJ_NAME}
+                MACRO_PREFIX ${PROJ_PREFIX}
+                VERSION_HH_NAME ${PROJ_NAME}-version.hh
+                CONFIG_HH_NAME ${PROJ_NAME}-config.hh
+                ARCHIVE_NAME ${PROJ_NAME}-${dicep_ARG_VERSION}
+                # VERSION_IN ${CMAKE_SOURCE_DIR}/${CMAKE_SCRIPTS}/version.h.in
+                # CONFIG_IN ${CMAKE_SOURCE_DIR}/${CMAKE_SCRIPTS}/config-base.h.in
             )
         endif()
 
