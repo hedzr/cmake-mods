@@ -1,5 +1,10 @@
 # CHANGELOG & HISTORY
 
+- v0.3.16
+  - security patch / update gh action
+  - fix prerequisites: testing on undefined ENV{CI_RUNNING}
+  - updates (llvm(s)/gen_versions/debugxxx/...)
+
 - v0.3.13
   - security patch / update gh action
 
