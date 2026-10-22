@@ -1,6 +1,11 @@
-# DON'T USE THIS FILE PLEASE, it's not a good approach to using LLVM.
-# Uses llvm-helpers.macro to integrate your target with LLVM support.
+#
+# DON'T USE THIS FILE PLEASE, it's not a good approach to
+# using LLVM.
+# Replace with llvm-helpers.macro to integrate your target
+# with LLVM support.
+#
 
+# OBSELETED
 
 # set LLVM base directory
 #     https://llvm.org/docs/CMake.html

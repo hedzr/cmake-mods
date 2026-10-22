@@ -287,6 +287,7 @@ function(add_llvm_supports target)
         CXX_STANDARD_REQUIRED YES
         CXX_EXTENSIONS OFF # use -std=c++11 rather than -std=gnu++11
     )
+
     # # target_include_directories(${target} PRIVATE
     # #         /opt/homebrew/opt/llvm/include
     # # )
@@ -335,6 +336,7 @@ function(add_llvm_target APP_NAME)
     # add_llvm_supports(${APP_NAME})
 
     set(altt_PARAM_OPTIONS
+        UNWIND # enable unwinding support
         # INSTALL # installable?
         # PACK # CPack?
         # GENERATE_CONFIG # generate config.h and version.h
@@ -370,6 +372,7 @@ function(add_llvm_target APP_NAME)
     set(altt_usage "add_llvm_target(<Name/Target>
       [SOURCES a.cc b.cc ...]
       [LLVM_COMPONENTS core jit ...]
+      [UNWIND]
       )
      
       Unparsed Params Are:
@@ -386,6 +389,7 @@ function(add_llvm_target APP_NAME)
 
     debug_print_value(altt_ARG_LLVM_COMPONENTS)
     debug_print_value(altt_ARG_SOURCES)
+    debug_print_value(altt_ARG_UNWIND)
 
     set(_prj_name "${APP_NAME}")
     set(llvm_components ${altt_ARG_LLVM_COMPONENTS})
@@ -395,6 +399,26 @@ function(add_llvm_target APP_NAME)
     else()
         add_llvm_supports(${_prj_name})
     endif()
+    if(altt_ARG_UNWIND)
+        # To use the bundled libunwind please use the following LDFLAGS:
+        #   LDFLAGS="-L/opt/homebrew/opt/llvm/lib/unwind -lunwind"
+        # 
+        # To use the bundled libc++ please use the following LDFLAGS:
+        #   LDFLAGS="-L/opt/homebrew/opt/llvm/lib/c++ -L/opt/homebrew/opt/llvm/lib/unwind -lunwind"
+        target_link_directories(${_prj_name} PRIVATE "${LLVM_LIBDIR}/unwind" "${LLVM_LIBDIR}/c++")
+        target_link_libraries(${_prj_name} PRIVATE "unwind")
+    endif()
+    # for the normal usage:
+    #
+    # If you need to have llvm first in your PATH, run:
+    #   echo 'export PATH="/opt/homebrew/opt/llvm/bin:$PATH"' >> ~/.zshrc
+    # 
+    # For compilers to find llvm you may need to set:
+    #   export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
+    #   export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
+    # 
+    # For cmake to find llvm you may need to set:
+    #   export CMAKE_PREFIX_PATH="/opt/homebrew/opt/llvm"
 endfunction()
 
 
