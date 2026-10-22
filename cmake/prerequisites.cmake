@@ -171,8 +171,12 @@ option(ENABLE_PPPM_WARNINGS "Enable Pre-Process Pragma Messages Warning when com
 # ############################## for installing
 # include(GNUInstallDirs)
 
-# set(CMAKE_VERBOSE_MAKEFILE ON)
-if((${CMAKE_VERBOSE_DEBUG} OR ${USE_DEBUG}) OR ($ENV{CI_RUNNING}))
+if(NOT DEFINED $ENV{CI_RUNNING})
+    set(CI_RUNNING OFF)
+else()
+    set(CI_RUNNING ON)
+endif()
+if(CMAKE_VERBOSE_DEBUG OR USE_DEBUG OR CI_RUNNING)
     # Enable verbose output from Makefile builds.
     # This variable is a cache entry initialized (to FALSE) by the project() command.
     # Users may enable the option in their local build tree to get more verbose
@@ -184,7 +188,7 @@ if((${CMAKE_VERBOSE_DEBUG} OR ${USE_DEBUG}) OR ($ENV{CI_RUNNING}))
     # on all the targets. See that target property for additional information.
     # If set, it’s value is also used by the try_compile() command.
     set(CMAKE_POSITION_INDEPENDENT_CODE CACHE BOOL "ON")
-    message(STATUS ">>> CMAKE_VERBOSE_DEBUG ON")
+    message(STATUS ">>> CMAKE_VERBOSE_DEBUG/USE_DEBUG/ENV{CI_RUNNING} = ON  // (CI or DEBUG Mode)")
 endif()
 
 # It is always easier to navigate in an IDE when projects are organized in folders.
