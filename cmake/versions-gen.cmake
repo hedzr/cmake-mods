@@ -18,6 +18,7 @@ function(gen_versions
         CMAKE_GENERATED_DIR
         VERSION_IN
         CONFIG_IN
+        OUTPUT_DIR
     )
     set(__gen_versions_PARAM_MULTI_VALUE_KEYWORDS
         # CXXFLAGS # cxx compiler options
@@ -36,9 +37,10 @@ function(gen_versions
 	 [CONFIG_HH_PATH <PATH>]      # eg: cui-config.hh
 	 [ARCHIVE_NAME <name>]        # eg: cui-1.0.0
      [CMAKE_SCRIPTS <dir>]        # eg: cmake
-	 [CMAKE_GENERATED_DIR <dir>]  # eg: ${CMAKE_BINARY_DIR}/generated
+	 [CMAKE_GENERATED_DIR <dir>]  # eg: \${CMAKE_BINARY_DIR}/generated
 	 [VERSION_IN <file>]          # eg: app-version.hh.in
 	 [CONFIG_IN <file>]           # eg: config-base.hh.in
+	 [OUTPUT_DIR <file>]          # eg: \${CMAKE_GENERATED_DIR}
      [sources...]
      )
      
@@ -67,6 +69,7 @@ function(gen_versions
     set(_CMAKE_GENERATED_DIR ${gen_versions_ARG_CMAKE_GENERATED_DIR})
     set(_VERSION_IN ${gen_versions_ARG_VERSION_IN})
     set(_CONFIG_IN ${gen_versions_ARG_CONFIG_IN})
+    set(_OUTPUT_DIR ${gen_versions_ARG_OUTPUT_DIR})
 
     if(PROJ_NAME AND NOT PROJ_NAME STREQUAL "")
     else()
@@ -107,6 +110,7 @@ function(gen_versions
     else()
         set(CMAKE_SCRIPTS "cmake")
     endif()
+    set(CMAKE_GENERATED_DIR "${CMAKE_GENERATED_DIR}")
     if(_CMAKE_GENERATED_DIR AND NOT _CMAKE_GENERATED_DIR STREQUAL "")
         set(CMAKE_GENERATED_DIR "${_CMAKE_GENERATED_DIR}")
         file(MAKE_DIRECTORY ${_CMAKE_GENERATED_DIR})
@@ -141,6 +145,9 @@ function(gen_versions
     endif()
 
     set(xOUT_DIR ${CMAKE_GENERATED_DIR})
+    if(_OUTPUT_DIR)
+        set(xOUT_DIR ${_OUTPUT_DIR})
+    endif()
 
     message("||              gen_version() : output-dir -> ${xOUT_DIR}")
     message("||   Using version.hh.in file : ${xrversion_in}, ARCHIVE_NAME = ${ARCHIVE_NAME}")
@@ -229,6 +236,9 @@ function(gen_versions
 
     set(_output_dir ${xOUT_DIR})
     # set(_output_dir ${CMAKE_CURRENT_BINARY_DIR})
+    message("||            _output_dir : ${_output_dir}")
+    message("||           xrversion_in : ${xrversion_in}")
+    message("||            xrconfig_in : ${xrconfig_in}")
 
     if(EXISTS ${xrversion_in})
         message("||    Generating version.h from ${xrversion_in} to ${_output_dir} - Version ${PROJECT_VERSION}...")

@@ -203,13 +203,12 @@ set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 
 message(STATUS "")
 message(STATUS ">>> HOME: $ENV{HOME} / $ENV{USERPROFILE} ")
-message(STATUS ">>> CMAKE_CXX_COMPILER            = ${CMAKE_CXX_COMPILER}")
-message(STATUS ">>> CMAKE_C_COMPILER              = ${CMAKE_C_COMPILER}")
-message(STATUS ">>> CMAKE_MAKE_PROGRAM            = ${CMAKE_MAKE_PROGRAM}")
-message(STATUS ">>> CMAKE_GENERATOR               = ${CMAKE_GENERATOR}")
-message(STATUS ">>> CMAKE_BUILD_TYPE              = ${CMAKE_BUILD_TYPE}")
+message(STATUS ">>> CMAKE_CXX_COMPILER          = ${CMAKE_CXX_COMPILER}")
+message(STATUS ">>> CMAKE_C_COMPILER            = ${CMAKE_C_COMPILER}")
+message(STATUS ">>> CMAKE_MAKE_PROGRAM          = ${CMAKE_MAKE_PROGRAM}")
+message(STATUS ">>> CMAKE_BUILD_TYPE            = ${CMAKE_BUILD_TYPE}")
 message(STATUS "")
-message(STATUS ">>> CMAKE_TOOLCHAIN_FILE          = ${CMAKE_TOOLCHAIN_FILE}")
+message(STATUS ">>> CMAKE_TOOLCHAIN_FILE        = ${CMAKE_TOOLCHAIN_FILE}")
 message(STATUS ">>> vcpkg tests 1: env: $ENV{VCPKG_ROOT}; def: ${VCPKG_ROOT}; ")
 message(STATUS "")
 
@@ -220,4 +219,4 @@ include(utils) # more tools such as print_debug_value, ...
 include(dummy-project) # a dummy target for detecting ARCH, cxx compilers, versions ...
 
 message(STATUS ">>> end of prerequisites")
-# message("")
+message("")
