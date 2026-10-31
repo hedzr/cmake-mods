@@ -73,6 +73,16 @@ include(AddLLVM)
 #         -lLLVMCore -lLLVMBinaryFormat -lLLVMSupport -lLLVMDemangle)
 
 
+
+# # LLVM
+# # find_package(LLVM 9 REQUIRED CONFIG HINTS "${basilisk_LLVM}/build/lib/cmake/llvm")
+# find_package(LLVM REQUIRED CONFIG HINTS "${basilisk_LLVM}/build/lib/cmake/llvm")
+# llvm_map_components_to_libnames(llvm_libs all)
+# link_directories(${LLVM_LIBRARY_DIR})
+# message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION} in ${LLVM_DIR} with headers in ${LLVM_INCLUDE_DIRS}")
+
+
+
 # https://github.com/llvm/llvm-project/blob/90de4a4ac96ef314e3af9c43c516d5aaf105777a/llvm/cmake/modules/LLVM-Config.cmake#L72
 macro(llvm_config executable)
     cmake_parse_arguments(ARG "USE_SHARED" "" "" ${ARGN})
@@ -127,7 +137,27 @@ endmacro(llvm_config)
 function(explicit_llvm_config executable)
     set(link_components ${ARGN})
 
-    llvm_map_components_to_libnames(LIBRARIES ${link_components})
+    llvm_map_components_to_libnames(LLVM_LIBS_C
+        support
+        core
+    )
+
+    llvm_map_components_to_libnames(LLVM_LIBS_I
+        support
+        core
+        orcjit
+        native
+        # all
+    )
+
+    llvm_map_components_to_libnames(LLVM_LIBRARIES ${link_components})
+
+    set_property(GLOBAL PROPERTY LLVM_LIBS "${LLVM_LIBRARIES}")
+    set_property(GLOBAL PROPERTY LLVM_LIBS_C "${LLVM_LIBS_C}")
+    set_property(GLOBAL PROPERTY LLVM_LIBS_I "${LLVM_LIBS_I}")
+    message(STATUS " --> LLVM_LIBS_C: ${LLVM_LIBS_C}")
+    message(STATUS " --> LLVM_LIBS_I: ${LLVM_LIBS_I}")
+
     foreach(c ${link_components})
         # message(STATUS "   - c = ${c}")
         if("${c}" STREQUAL "all")
@@ -140,68 +170,68 @@ function(explicit_llvm_config executable)
                 # string(STRIP "${all_components}" t)
                 # string(REGEX REPLACE "[-]l" "" LIBRARIES "${t}")
                 # # message(STATUS "---- all_components: ${all_components}")
-                set(LIBRARIES LLVM)
+                set(LLVM_LIBRARIES LLVM)
             else()
-                llvm_map_components_to_libnames(LIBRARIES ${all_components})
+                llvm_map_components_to_libnames(LLVM_LIBRARIES ${all_components})
             endif()
-            message(STATUS "---- LIBRARIES: ${LIBRARIES}")
+            message(STATUS "---- LLVM_LIBRARIES: ${LIBRARIES}")
             # list(APPEND LIBRARIES ${all_components})
         endif()
     endforeach()
-    list(REMOVE_ITEM LIBRARIES LLVMjit) # fix llvm_map_components_to_libnames's wrong outputs
-    string(STRIP "${LIBRARIES}" LIBRARIES)
+    list(REMOVE_ITEM LLVM_LIBRARIES LLVMjit) # fix llvm_map_components_to_libnames's wrong outputs
+    string(STRIP "${LLVM_LIBRARIES}" LLVM_LIBRARIES)
     get_target_property(t ${executable} TYPE)
     # message(STATUS "---- link_components: ${link_components}")
-    # message(STATUS "---- LIBRARIES: ${LIBRARIES}")
+    # message(STATUS "---- LLVM_LIBRARIES: ${LLVM_LIBRARIES}")
     if(t STREQUAL "STATIC_LIBRARY")
         message(STATUS "     Added llvm_libs (static) to target '${executable}'")
-        message(STATUS "       ${LIBRARIES}")
+        message(STATUS "       ${LLVM_LIBRARIES}")
         target_link_libraries(${executable} INTERFACE ${LIBRARIES})
     elseif(t STREQUAL "EXECUTABLE" OR t STREQUAL "SHARED_LIBRARY" OR t STREQUAL "MODULE_LIBRARY")
         message(STATUS "     Added llvm_libs (shared) to target '${executable}'")
-        message(STATUS "       ${LIBRARIES}")
+        message(STATUS "       ${LLVM_LIBRARIES}")
         target_link_libraries(${executable} PRIVATE ${LIBRARIES})
     elseif(t STREQUAL "INTERFACE_LIBRARY")
         message(STATUS "     Added llvm_libs (interface) to target '${executable}'")
-        message(STATUS "       ${LIBRARIES}")
+        message(STATUS "       ${LLVM_LIBRARIES}")
         target_link_libraries(${executable} INTERFACE ${LIBRARIES})
     else()
         message(STATUS "---- t: ${t}")
         message(STATUS "     Added llvm_libs (legacy) to target '${executable}'")
-        message(STATUS "       ${LIBRARIES}")
+        message(STATUS "       ${LLVM_LIBRARIES}")
         # Use plain form for legacy user.
-        target_link_libraries(${executable} ${LIBRARIES})
+        target_link_libraries(${executable} ${LLVM_LIBRARIES})
     endif()
 endfunction(explicit_llvm_config)
 
-set(LLVM_LINK_COMPONENTS
-    Analysis
-    Core
-    ExecutionEngine
-    InstCombine
-    Object
-    OrcJIT
-    Passes
-    RuntimeDyld
-    ScalarOpts
-    Support
-    TargetParser
-    native
-    nativecodegen irprinter irreader
-    engine executionengine extensions interpreter
-    mc mcjit
-    asmparser demangle
-    scalaropts
-    transformutils
-    #         support core irreader
-    #         demangle engine executionengine
-    #         extensions interpreter ipo irprinter native nativecodegen
-    #         mc mcjit
-    #         asmparser
-    #         objcarcopts
-    #         scalaropts
-    #         transformutils
-)
+# set(LLVM_LINK_COMPONENTS
+#     Analysis
+#     Core
+#     ExecutionEngine
+#     InstCombine
+#     Object
+#     OrcJIT
+#     Passes
+#     RuntimeDyld
+#     ScalarOpts
+#     Support
+#     TargetParser
+#     native
+#     nativecodegen irprinter irreader
+#     engine executionengine extensions interpreter
+#     mc mcjit
+#     asmparser demangle
+#     scalaropts
+#     transformutils
+#     #         support core irreader
+#     #         demangle engine executionengine
+#     #         extensions interpreter ipo irprinter native nativecodegen
+#     #         mc mcjit
+#     #         asmparser
+#     #         objcarcopts
+#     #         scalaropts
+#     #         transformutils
+# )
 # llvm_map_components_to_libnames(llvm_libs ${which_llvm_components})
 # execute_process(COMMAND ${LLVM_TOOLS_BINARY_DIR}/llvm-config --libs "${LLVM_LINK_COMPONENTS}" OUTPUT_VARIABLE llvm_libs)
 # list(REMOVE_ITEM llvm_libs LLVMjit) # fix llvm_map_components_to_libnames's wrong outputs
@@ -236,9 +266,44 @@ function(define_basics_llvm_target)
         # target_link_libraries(${new_target} INTERFACE ${llvm_libs})
 
         if(comps)
-            message(STATUS "---- define_basic_llvm_target: new_target=${new_target}, comps=${comps}")
+            message(STATUS "---- [define_basic_llvm_target] new_target=${new_target}, comps=${comps}")
+            message(STATUS "            LLVM_INCLUDE_DIRS = ${LLVM_INCLUDE_DIRS}")
+            message(STATUS "             LLVM_DEFINITIONS = ${LLVM_DEFINITIONS}")
             llvm_config(${new_target} ${comps})
         else()
+
+            message(STATUS "---- [define_basic_llvm_target] new_target=${new_target}")
+            message(STATUS "            LLVM_INCLUDE_DIRS = ${LLVM_INCLUDE_DIRS}")
+            message(STATUS "             LLVM_DEFINITIONS = ${LLVM_DEFINITIONS}")
+            set(LLVM_LINK_COMPONENTS
+                Analysis
+                Core
+                ExecutionEngine
+                InstCombine
+                Object
+                OrcJIT
+                Passes
+                RuntimeDyld
+                ScalarOpts
+                Support
+                TargetParser
+                native
+                nativecodegen irprinter irreader
+                engine executionengine extensions interpreter
+                mc mcjit
+                asmparser demangle
+                scalaropts
+                transformutils
+                #         support core irreader
+                #         demangle engine executionengine
+                #         extensions interpreter ipo irprinter native nativecodegen
+                #         mc mcjit
+                #         asmparser
+                #         objcarcopts
+                #         scalaropts
+                #         transformutils
+            )
+
             llvm_config(${new_target} ${LLVM_LINK_COMPONENTS})
         endif()
 
@@ -278,7 +343,7 @@ function(add_llvm_supports target)
         define_basics_llvm_target("${LIB}" "${ARG_UNPARSED_ARGUMENTS}")
     else()
         set(LIB basics::LLVM)
-        define_basics_llvm_target()
+        define_basics_llvm_target() # default new-target is basics::LLVM
     endif()
 
     set_target_properties(${target}
@@ -387,9 +452,9 @@ function(add_llvm_target APP_NAME)
         set(altt_ARG_SOURCES "${altt_ARG_UNPARSED_ARGUMENTS}")
     endif()
 
-    debug_print_value(altt_ARG_LLVM_COMPONENTS)
-    debug_print_value(altt_ARG_SOURCES)
-    debug_print_value(altt_ARG_UNWIND)
+    # debug_print_value(altt_ARG_LLVM_COMPONENTS)
+    # debug_print_value(altt_ARG_SOURCES)
+    # debug_print_value(altt_ARG_UNWIND)
 
     set(_prj_name "${APP_NAME}")
     set(llvm_components ${altt_ARG_LLVM_COMPONENTS})
@@ -408,6 +473,7 @@ function(add_llvm_target APP_NAME)
         target_link_directories(${_prj_name} PRIVATE "${LLVM_LIBDIR}/unwind" "${LLVM_LIBDIR}/c++")
         target_link_libraries(${_prj_name} PRIVATE "unwind")
     endif()
+    message(STATUS "---- [add_llvm_test_target] - add LLVM ${LLVM_VERSION} to target ${_prj_name}.")
     # for the normal usage:
     #
     # If you need to have llvm first in your PATH, run:
