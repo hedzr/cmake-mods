@@ -1,4 +1,12 @@
-
+#
+#
+# Usage:
+#
+#    gen_versions(
+#       PROJ_NAME volo
+#       MACRO_PREFIX VOLO
+#    )
+#
 function(gen_versions
     # PROJ_NAME xPROJECT_MACRO_PREFIX
     # VERSION_H_NAME
@@ -120,9 +128,10 @@ function(gen_versions
         file(MAKE_DIRECTORY ${_CMAKE_GENERATED_DIR})
     endif()
 
-    set(xrversion_in ${_VERSION_IN})
-    if(xVERSION_IN)
-        # message("xVERSION_IN  = '${xrversion_in}'")
+    # set(xrversion_in ${_VERSION_IN})
+    message("_VERSION_IN  = '${xrversion_in}'")
+    if(_VERSION_IN AND EXISTS ${_VERSION_IN})
+        message("xrversion_in  = '${_VERSION_IN}' (_VERSION_IN)")
         set(xrversion_in ${_VERSION_IN})
     else()
         set(xrversion_in "${CMAKE_SOURCE_DIR}/${CMAKE_SCRIPTS}/app-version.hh.in")
@@ -131,7 +140,7 @@ function(gen_versions
         else()
             # message("xVERSION_IN => '${xrversion_in}'")
         endif()
-        # message("xVERSION_IN := '${xrversion_in}'")
+        message("xrversion_in := '${xrversion_in}'")
     endif()
 
     set(xrconfig_in ${_CONFIG_IN})
