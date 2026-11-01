@@ -1,5 +1,14 @@
 # CHANGELOG & HISTORY
 
+- v0.3.19
+  - update ci to report history summary to github
+
+- v0.3.18
+  - improved llvm-helpers
+  - fix versions-gen: both CMAKE_GENERATED_DIR and OUTPUT_DIR specified
+  - fix versions-gen: CONFIG_IN doesn't work
+  - fix versions-gen: VERSION_IN doesn't work
+
 - v0.3.17
   - security patch / update gh action
   - fix gen-versions: add/mv the missing .in files
