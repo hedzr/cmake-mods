@@ -1,0 +1,6 @@
+find_package(Boost REQUIRED COMPONENTS headers program_options)
+if(Boost_FOUND)
+    message(STATUS "Found Boost: ${Boost_INCLUDE_DIRS} (found version \"${Boost_VERSION}\")")
+    set(Boost_USE_MULTITHREADED TRUE)
+    set(Boost_NO_WARN_NEW_VERSIONS 1)
+endif()
