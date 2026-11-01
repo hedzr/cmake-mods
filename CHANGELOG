@@ -1,5 +1,10 @@
 # CHANGELOG & HISTORY
 
+- v0.3.20
+  - improved llvm-helpers
+  - added load-boost
+  - fix the upload artifacts in ci
+
 - v0.3.19
   - update ci to report history summary to github
   - fix llvm-helpers
