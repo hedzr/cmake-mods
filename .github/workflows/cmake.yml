@@ -349,7 +349,7 @@ jobs:
 
       - name: Create Release
         id: create_release
-        uses: softprops/action-gh-release@v3.0.3 # pin to v2.2.1 to solve 422 error, see its issue #616
+        uses: softprops/action-gh-release@v3 # pin to v2.2.1 to solve 422 error, see its issue #616
         if: ${{ startsWith(github.ref, 'refs/tags/') && matrix.config.build_type == 'Release' && matrix.config.package_generator != '' }}
         env:
           # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -357,23 +357,32 @@ jobs:
         with:
           generate_release_notes: true
           discussion_category_name: Announcements
-          # tag_name: ${{ github.ref }}
-          tag_name: ${{ github.event.release.tag_name }}
-          # release_name: Release ${{ github.ref }}
+          # # repo_token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          # # tag: ${{ github.ref }}
+          # tag_name: ${{ github.ref_name }}
+          # name: ${{ env.TAG_NAME }}
+          # # overwrite: true
+          # overwrite_files: true
+          # # file_glob: true
+          append_body: true
           draft: false
           prerelease: false
-          append_body: true
           preserve_order: true
           # body_path: relnotes.md
-          body: ${{ github.event.head_commit.message }}
+          body: |
+            ${{ github.event.head_commit.message }}
+          files: |
+            ./*.zip
+          # tag_name: ${{ github.ref }}
+          # tag_name: ${{ github.event.release.tag_name }}
           # body: |
           #   This release was created by: ${{ github.event.sender.login }}
           #   Release of ${{ github.ref }}, built from commit ${{ env.SHORT_SHA }}, is now available.
           # files: |
           #  ./cmdr-*.*
           #   build/*-*${{ matrix.config.build_type }}*-*.*
-          files: |
-            build/packages/*${{ matrix.config.artifact }}
+          #   build/packages/*${{ matrix.config.artifact }}
 
       # - name: Publish to codecov
       #   uses: codecov/codecov-action@v2
