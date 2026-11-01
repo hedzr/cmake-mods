@@ -6,13 +6,123 @@
 #          - `llvm_config`
 #
 
+
+if($ENV{LLVM_VER})
+    set(_llvm_ver "$ENV{LLVM_VER}")
+    set(_llvm_version "${_llvm_ver}")
+else()
+    set(_llvm_version "22.1.8")
+    set(_llvm_ver "22")
+    # set(_llvm_version "21")
+    # set(_llvm_ver "21")
+    # set(_llvm_version "20")
+    # set(_llvm_ver "20")
+endif()
+if($ENV{HOMEBREW_PREFIX})
+    set(BREW_PREFIX "${HOMEBREW_PREFIX}")
+    # execute_process(
+    #         COMMAND brew --prefix
+    #         OUTPUT_VARIABLE HOMEBREW_PREFIX
+    #         OUTPUT_STRIP_TRAILING_WHITESPACE
+    # )
+    # list(APPEND CMAKE_PREFIX_PATH "${HOMEBREW_PREFIX}")
+else()
+    set(BREW_PREFIX "/opt/homebrew")
+endif()
+# if(NOT LLVM_ROOT)
+#     message(STATUS "[for-llvm] try locating _LLVM_ROOT...")
+#     set(_LLVM_ROOT "${BREW_PREFIX}/opt/llvm@${_llvm_ver}")
+#     if(EXISTS ${_LLVM_ROOT})
+#         set(LLVM_ROOT "${_LLVM_ROOT}")
+#     endif()
+#     find_package(LLVM ${_llvm_version} CONFIG)
+#     if(NOT LLVM_FOUND)
+#         message(STATUS "[for-llvm] locating LLVM ${_llvm_ver} failed, try using default installation")
+#         find_package(LLVM REQUIRED CONFIG)
+#     endif()
+# else()
+#     find_package(LLVM REQUIRED CONFIG)
+# endif()
+# if(LLVM_FOUND)
+#     set(_llvm_version "${LLVM_VERSION}")
+#     message(STATUS "[for-llvm] locating LLVM ${_llvm_version} successfully.")
+# endif()
+
+
+if(NOT LLVM_ROOT)
+    # message(STATUS "[for-llvm] try locating _LLVM_ROOT...")
+    set(_LLVM_ROOT "${BREW_PREFIX}/opt/llvm@${_llvm_ver}")
+    if(EXISTS ${_LLVM_ROOT})
+        set(LLVM_ROOT "${_LLVM_ROOT}")
+    endif()
+endif()
+
 find_package(LLVM REQUIRED CONFIG)
-message(STATUS "---- Found LLVM ${LLVM_PACKAGE_VERSION} at ${LLVM_TOOLS_BINARY_DIR}")
-message(STATUS "---- Using LLVMConfig.cmake in: ${LLVM_DIR}")
-message(STATUS "---- Using LLVM_CMAKE_DIR: ${LLVM_CMAKE_DIR}")
-message(STATUS "---- Using LLVM_DEFINITIONS: ${LLVM_DEFINITIONS}")
-message(STATUS "---- Using LLVM_ENABLE_EXCEPTION: ${LLVM_ENABLE_EXCEPTION}")
-message(STATUS "---- Using LLVM_ENABLE_RTTI: ${LLVM_ENABLE_RTTI}")
+# Or:  find_package(LLVM 16.0.6 REQUIRED CONFIG)
+# And: find_package(Clang 17.0.0 REQUIRED CONFIG)
+if(LLVM_FOUND)
+    set(_llvm_version "${LLVM_VERSION}") # update _llvm_version
+    if(${LLVM_VERSION} LESS 18.0.0)
+        message(WARNING "---- [llvm-helpers] Found legacy LLVM: ${LLVM_INCLUDE_DIRS} (found version \"${LLVM_VERSION}\")")
+        add_definitions(-D_LLVM_LEGACY)
+    else()
+        message(STATUS "---- [llvm-helpers] Found LLVM: ${LLVM_INCLUDE_DIRS} (found version \"${LLVM_VERSION}\")")
+        # LLVM have these predefined macros (in llvm-config.h):
+        #     LLVM_VERSION_STRING
+        #     LLVM_VERSION_MAJOR
+        #     LLVM_VERSION_MINOR
+        #     LLVM_VERSION_PATCH
+        #
+        # add_definitions(
+        #     -DLLVM_VERSION=${LLVM_VERSION}
+        #     -DLLVM_VERSION_MAJOR=${LLVM_VERSION_MAJOR}
+        #     -DLLVM_VERSION_MINOR=${LLVM_VERSION_MINOR}
+        #     -DLLVM_VERSION_PATCH=${LLVM_VERSION_PATCH}
+        # )
+        if(${LLVM_VERSION} MATCHES "16.*.*")
+            add_definitions(-D_LLVM_16)
+        elseif(${LLVM_VERSION} MATCHES "17.*.*")
+            add_definitions(-D_LLVM_17)
+        elseif(${LLVM_VERSION} MATCHES "18.*.*")
+            add_definitions(-D_LLVM_18)
+        elseif(${LLVM_VERSION} MATCHES "19.*.*")
+            add_definitions(-D_LLVM_19)
+        elseif(${LLVM_VERSION} MATCHES "20.*.*")
+            add_definitions(-D_LLVM_20)
+        elseif(${LLVM_VERSION} MATCHES "21.*.*")
+            add_definitions(-D_LLVM_21)
+        elseif(${LLVM_VERSION} MATCHES "22.*.*")
+            add_definitions(-D_LLVM_22)
+        elseif(${LLVM_VERSION} MATCHES "23.*.*")
+            add_definitions(-D_LLVM_23)
+        elseif(${LLVM_VERSION} MATCHES "24.*.*")
+            add_definitions(-D_LLVM_24)
+        elseif(${LLVM_VERSION} MATCHES "25.*.*")
+            add_definitions(-D_LLVM_25)
+        elseif(${LLVM_VERSION} MATCHES "26.*.*")
+            add_definitions(-D_LLVM_26)
+        elseif(${LLVM_VERSION} MATCHES "27.*.*")
+            add_definitions(-D_LLVM_27)
+        elseif(${LLVM_VERSION} MATCHES "28.*.*")
+            add_definitions(-D_LLVM_28)
+        elseif(${LLVM_VERSION} MATCHES "29.*.*")
+            add_definitions(-D_LLVM_29)
+        elseif(${LLVM_VERSION} MATCHES "30.*.*")
+            add_definitions(-D_LLVM_30)
+        endif()
+    endif()
+    add_definitions(${LLVM_DEFINITIONS})
+    llvm_map_components_to_libnames(
+        llvm_libs core executionengine jitlink orcjit nativecodegen
+        support passes ${LLVM_TARGETS_TO_BUILD})
+endif()
+
+message(STATUS "---- [llvm-helpers] Found LLVM ${LLVM_PACKAGE_VERSION} at ${LLVM_TOOLS_BINARY_DIR}")
+message(STATUS "---- [llvm-helpers] Using LLVMConfig.cmake in: ${LLVM_DIR}")
+message(STATUS "---- [llvm-helpers] Using LLVM_CMAKE_DIR: ${LLVM_CMAKE_DIR}")
+message(STATUS "---- [llvm-helpers] Using LLVM_DEFINITIONS: ${LLVM_DEFINITIONS}")
+message(STATUS "---- [llvm-helpers] Using LLVM_ENABLE_EXCEPTION: ${LLVM_ENABLE_EXCEPTION}")
+message(STATUS "---- [llvm-helpers] Using LLVM_ENABLE_RTTI: ${LLVM_ENABLE_RTTI}")
 list(APPEND CMAKE_MODULE_PATH ${LLVM_CMAKE_DIR})
 
 # use a llvm macro/function, including its cmake components at first
