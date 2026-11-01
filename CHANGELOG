@@ -2,6 +2,7 @@
 
 - v0.3.19
   - update ci to report history summary to github
+  - fix llvm-helpers
 
 - v0.3.18
   - improved llvm-helpers
