@@ -150,9 +150,9 @@ function(explicit_llvm_config executable)
         # all
     )
 
-    llvm_map_components_to_libnames(LLVM_LIBRARIES ${link_components})
+    llvm_map_components_to_libnames(LLVM_LIBS ${link_components})
 
-    set_property(GLOBAL PROPERTY LLVM_LIBS "${LLVM_LIBRARIES}")
+    set_property(GLOBAL PROPERTY LLVM_LIBS "${LLVM_LIBS}")
     set_property(GLOBAL PROPERTY LLVM_LIBS_C "${LLVM_LIBS_C}")
     set_property(GLOBAL PROPERTY LLVM_LIBS_I "${LLVM_LIBS_I}")
     message(STATUS " --> LLVM_LIBS_C: ${LLVM_LIBS_C}")
@@ -170,37 +170,37 @@ function(explicit_llvm_config executable)
                 # string(STRIP "${all_components}" t)
                 # string(REGEX REPLACE "[-]l" "" LIBRARIES "${t}")
                 # # message(STATUS "---- all_components: ${all_components}")
-                set(LLVM_LIBRARIES LLVM)
+                set(LLVM_LIBS LLVM)
             else()
-                llvm_map_components_to_libnames(LLVM_LIBRARIES ${all_components})
+                llvm_map_components_to_libnames(LLVM_LIBS ${all_components})
             endif()
-            message(STATUS "---- LLVM_LIBRARIES: ${LIBRARIES}")
+            message(STATUS "---- LLVM_LIBS: ${LLVM_LIBS}")
             # list(APPEND LIBRARIES ${all_components})
         endif()
     endforeach()
-    list(REMOVE_ITEM LLVM_LIBRARIES LLVMjit) # fix llvm_map_components_to_libnames's wrong outputs
-    string(STRIP "${LLVM_LIBRARIES}" LLVM_LIBRARIES)
+    list(REMOVE_ITEM LLVM_LIBS LLVMjit) # fix llvm_map_components_to_libnames's wrong outputs
+    string(STRIP "${LLVM_LIBS}" LLVM_LIBS)
     get_target_property(t ${executable} TYPE)
     # message(STATUS "---- link_components: ${link_components}")
-    # message(STATUS "---- LLVM_LIBRARIES: ${LLVM_LIBRARIES}")
+    # message(STATUS "---- LLVM_LIBS: ${LLVM_LIBS}")
     if(t STREQUAL "STATIC_LIBRARY")
-        message(STATUS "     Added llvm_libs (static) to target '${executable}'")
-        message(STATUS "       ${LLVM_LIBRARIES}")
-        target_link_libraries(${executable} INTERFACE ${LIBRARIES})
+        message(STATUS "     Added llvm libs (static) to target '${executable}'")
+        message(STATUS "       ${LLVM_LIBS}")
+        target_link_libraries(${executable} INTERFACE ${LLVM_LIBS})
     elseif(t STREQUAL "EXECUTABLE" OR t STREQUAL "SHARED_LIBRARY" OR t STREQUAL "MODULE_LIBRARY")
-        message(STATUS "     Added llvm_libs (shared) to target '${executable}'")
-        message(STATUS "       ${LLVM_LIBRARIES}")
-        target_link_libraries(${executable} PRIVATE ${LIBRARIES})
+        message(STATUS "     Added llvm libs (shared) to target '${executable}'")
+        message(STATUS "       ${LLVM_LIBS}")
+        target_link_libraries(${executable} PRIVATE ${LLVM_LIBS})
     elseif(t STREQUAL "INTERFACE_LIBRARY")
-        message(STATUS "     Added llvm_libs (interface) to target '${executable}'")
-        message(STATUS "       ${LLVM_LIBRARIES}")
-        target_link_libraries(${executable} INTERFACE ${LIBRARIES})
+        message(STATUS "     Added llvm libs (interface) to target '${executable}'")
+        message(STATUS "       ${LLVM_LIBS}")
+        target_link_libraries(${executable} INTERFACE ${LLVM_LIBS})
     else()
         message(STATUS "---- t: ${t}")
-        message(STATUS "     Added llvm_libs (legacy) to target '${executable}'")
-        message(STATUS "       ${LLVM_LIBRARIES}")
+        message(STATUS "     Added llvm libs (legacy) to target '${executable}'")
+        message(STATUS "       ${LLVM_LIBS}")
         # Use plain form for legacy user.
-        target_link_libraries(${executable} ${LLVM_LIBRARIES})
+        target_link_libraries(${executable} ${LLVM_LIBS})
     endif()
 endfunction(explicit_llvm_config)
 
@@ -253,7 +253,7 @@ function(define_basics_llvm_target)
 
     if(TARGET ${new_target})
         if(ARGV0 AND ARGV1)
-            message(STATUS "Target ${new_target} exists")
+            message(STATUS "Target ${new_target} exists, ignored.")
         endif()
     else()
         # Create a wrapper for the LLVM components we need in this
@@ -270,6 +270,7 @@ function(define_basics_llvm_target)
             message(STATUS "            LLVM_INCLUDE_DIRS = ${LLVM_INCLUDE_DIRS}")
             message(STATUS "             LLVM_DEFINITIONS = ${LLVM_DEFINITIONS}")
             llvm_config(${new_target} ${comps})
+            message(STATUS "---- [define_basic_llvm_target] target ${new_target} configured.")
         else()
 
             message(STATUS "---- [define_basic_llvm_target] new_target=${new_target}")
@@ -305,9 +306,10 @@ function(define_basics_llvm_target)
             )
 
             llvm_config(${new_target} ${LLVM_LINK_COMPONENTS})
+            message(STATUS "---- [define_basic_llvm_target] target ${new_target} configured.")
         endif()
 
-        # target_link_libraries(${new_target} INTERFACE ${LLVM_LIBRARIES})
+        # target_link_libraries(${new_target} INTERFACE ${LLVM_LIBS})
         # target_link_options(${new_target} INTERFACE ${llvm_link_flags})
         target_compile_options(${new_target} INTERFACE
             # https://stackoverflow.com/questions/53805007/compilation-failing-on-enableabibreakingchecks
@@ -384,6 +386,7 @@ function(add_llvm_supports target)
     # if(llvm_components)
     #     message(STATUS "---- DONE: add_llvm_supports(target=${target}): ${LIB}")
     # endif()
+    message(STATUS "---- [add_llvm_supports] added ${LIB} to target ${target}.")
 endfunction()
 
 # Usage:
@@ -427,7 +430,7 @@ function(add_llvm_target APP_NAME)
         SOURCES
     )
 
-    # message(STATUS "---- add_llvm_test_target - ARGC=${ARGC}, ARGV0=${ARGV0}, ARGV1=${ARGV1}. ${ARGN}")
+    # message(STATUS "---- add_llvm_target - ARGC=${ARGC}, ARGV0=${ARGV0}, ARGV1=${ARGV1}. ${ARGN}")
     cmake_parse_arguments(altt_ARG
         "${altt_PARAM_OPTIONS}"
         "${altt_PARAM_ONE_VALUE_KEYWORDS}"
@@ -473,7 +476,7 @@ function(add_llvm_target APP_NAME)
         target_link_directories(${_prj_name} PRIVATE "${LLVM_LIBDIR}/unwind" "${LLVM_LIBDIR}/c++")
         target_link_libraries(${_prj_name} PRIVATE "unwind")
     endif()
-    message(STATUS "---- [add_llvm_test_target] - add LLVM ${LLVM_VERSION} to target ${_prj_name}.")
+    message(STATUS "---- [add_llvm_target] - add LLVM ${LLVM_VERSION} to target ${_prj_name}.")
     # for the normal usage:
     #
     # If you need to have llvm first in your PATH, run:
@@ -504,4 +507,5 @@ function(add_llvm_test_target APP_NAME)
     add_test(NAME ${_prj_name}
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         COMMAND $<TARGET_FILE:${_prj_name}>)
+    message(STATUS "---- [add_llvm_test_target] - add LLVM ${LLVM_VERSION} to target ${_prj_name}.")
 endfunction()
