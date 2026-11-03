@@ -1,5 +1,8 @@
 # CHANGELOG & HISTORY
 
+- v0.3.21
+  - improved cxx-detect-compilers
+
 - v0.3.20
   - improved llvm-helpers
   - added load-boost
