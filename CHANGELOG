@@ -1,5 +1,8 @@
 # CHANGELOG & HISTORY
 
+- v0.3.22
+  - fix policy warning in load-boost
+
 - v0.3.21
   - improved cxx-detect-compilers
 
