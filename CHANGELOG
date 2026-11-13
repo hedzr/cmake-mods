@@ -1,5 +1,9 @@
 # CHANGELOG & HISTORY
 
+- v0.3.30
+  - updated dummy-project to detect cmake version and enable cxx modules supports
+  - added cxx-modules supports
+
 - v0.3.22
   - fix policy warning in load-boost
 
